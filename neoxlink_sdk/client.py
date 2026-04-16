@@ -27,3 +27,22 @@ class NeoXlinkClient:
         response = self._client.post("/v1/entries", json=payload, headers=headers)
         response.raise_for_status()
         return response.json()
+
+    def get_entry(self, raw_entry_id: str) -> dict[str, Any]:
+        response = self._client.get(f"/v1/entries/{raw_entry_id}")
+        response.raise_for_status()
+        return response.json()
+
+    def search(
+        self,
+        query: str,
+        filters: dict[str, list[str]] | None = None,
+        entry_kind: str | None = None,
+        top_k: int = 20,
+    ) -> dict[str, Any]:
+        payload: dict[str, Any] = {"query": query, "filters": filters or {}, "top_k": top_k}
+        if entry_kind:
+            payload["entry_kind"] = entry_kind
+        response = self._client.post("/v1/search", json=payload)
+        response.raise_for_status()
+        return response.json()
