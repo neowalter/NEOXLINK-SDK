@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "neoxlink-sdk"
-version = "0.1.0"
-description = "Public SDK and core contracts for NEOXLINK"
+version = "0.2.0"
+description = "Public SDK for neoxailink.com parse-confirm-structure workflows"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = ["httpx>=0.27.0", "pydantic>=2.8.2"]

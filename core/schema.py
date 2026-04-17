@@ -45,6 +45,8 @@ class StructuredRecordV1(BaseModel):
     normalized_text: str
     confidence: float = Field(ge=0.0, le=1.0)
     quality_flags: QualityFlags = Field(default_factory=QualityFlags)
+    unspsc_code: str | None = Field(default=None, pattern=r"^\d{8}$")
+    unspsc_name: str | None = None
     schema_version: str = "v1"
 
     def dict_for_db(self) -> dict[str, Any]:
