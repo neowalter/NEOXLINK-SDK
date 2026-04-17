@@ -1,4 +1,5 @@
 from .client import NeoXlinkClient
+from .chains import NeoxlinkSubmissionChain, SubmissionChainInput
 from .mcp import NeoxlinkMCPAdapter
 from .models import (
     ConfirmedEntry,
@@ -17,6 +18,7 @@ from .unspsc import classify_unspsc
 __all__ = [
     "ConfirmedEntry",
     "NeoXlinkClient",
+    "NeoxlinkSubmissionChain",
     "NeoxlinkMCPAdapter",
     "NeoxlinkSkill",
     "ParseDraft",
@@ -26,6 +28,7 @@ __all__ = [
     "SkillRequest",
     "SkillResponse",
     "StructuredSubmissionPipeline",
+    "SubmissionChainInput",
     "UNSPSCClassification",
     "classify_unspsc",
 ]

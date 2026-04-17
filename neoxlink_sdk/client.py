@@ -105,3 +105,9 @@ class NeoXlinkClient:
 
     def close(self) -> None:
         self._client.close()
+
+    def __enter__(self) -> "NeoXlinkClient":
+        return self
+
+    def __exit__(self, _exc_type: Any, _exc: Any, _tb: Any) -> None:
+        self.close()

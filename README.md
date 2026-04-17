@@ -25,6 +25,13 @@ It is designed for:
 pip install -e .
 ```
 
+## Design Principles
+
+- **Natural-language first**: every core entry point accepts free text.
+- **Structured-by-default**: parse outputs are typed and include UNSPSC standardization.
+- **Composable runtime**: direct API client, pipeline orchestration, skill adapter, and MCP adapter.
+- **Professional operator ergonomics**: concise models, explicit stages, and predictable return payloads.
+
 ## Architecture (v0.2)
 
 ### `neoxlink_sdk.client.NeoXlinkClient`
@@ -46,6 +53,10 @@ Orchestration layer for parse -> confirm -> resolve with explicit state objects:
 - `ResolveResult`
 - `PipelineOutcome`
 - built-in UNSPSC classification enrichment (`code` + `name`)
+
+### `neoxlink_sdk.chains.NeoxlinkSubmissionChain`
+
+LangChain-like invocation style (`invoke`) for orchestration-heavy applications.
 
 ### `neoxlink_sdk.skill.NeoxlinkSkill`
 
@@ -91,6 +102,28 @@ confirmed = pipeline.confirm(
 # 3) optional resolve
 resolved = pipeline.resolve(confirmed.raw_entry_id)
 print(resolved.path, resolved.reason)
+```
+
+## Chain-Style Usage (LangChain-like)
+
+```python
+from neoxlink_sdk import NeoXlinkClient, NeoxlinkSubmissionChain, StructuredSubmissionPipeline
+
+chain = NeoxlinkSubmissionChain(
+    StructuredSubmissionPipeline(
+        NeoXlinkClient(base_url="https://neoxailink.com", api_key="ak_live_xxx")
+    )
+)
+
+outcome = chain.invoke(
+    {
+        "text": "Need startup policy compliance advisor in Shanghai.",
+        "entry_kind": "demand",
+        "auto_confirm": True,
+        "resolve_after_confirm": True,
+    }
+)
+print(outcome.model_dump(mode="json"))
 ```
 
 ## Skill Integration Example
@@ -190,6 +223,12 @@ print(code, name, confidence)
 - `core/schema.py`
 - `core/dedup.py`
 - `core/matching.py`
+
+## Examples
+
+- `examples/01_structured_pipeline.py` - parse/confirm/resolve flow
+- `examples/02_skill_runtime.py` - skill runtime integration
+- `examples/03_chain_style.py` - chain-style invocation
 
 ## License
 
