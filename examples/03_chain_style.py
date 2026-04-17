@@ -15,6 +15,7 @@ def main() -> None:
             "metadata": {"channel": "chain-example"},
             "auto_confirm": True,
             "resolve_after_confirm": True,
+            "use_own_model": False,
         }
     )
     print(result.model_dump(mode="json"))

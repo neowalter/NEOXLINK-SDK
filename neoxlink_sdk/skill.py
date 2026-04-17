@@ -14,7 +14,12 @@ class NeoxlinkSkill:
 
     def run(self, request: SkillRequest | dict[str, Any]) -> SkillResponse:
         req = request if isinstance(request, SkillRequest) else SkillRequest.model_validate(request)
-        draft = self.pipeline.parse(text=req.text, entry_kind=req.entry_kind, metadata=req.metadata)
+        draft = self.pipeline.parse(
+            text=req.text,
+            entry_kind=req.entry_kind,
+            metadata=req.metadata,
+            use_own_model=req.use_own_model,
+        )
 
         if not req.auto_confirm:
             return SkillResponse(status="preview_ready", draft=draft)

@@ -61,6 +61,27 @@ def _normalize(text: str) -> list[str]:
     return [token for token in tokens if token]
 
 
+def unspsc_candidates(text: str, top_k: int = 3) -> list[tuple[UNSPSCEntry, float]]:
+    """Return top UNSPSC candidates with deterministic confidence values."""
+    tokens = set(_normalize(text))
+    if not tokens:
+        return []
+
+    scored: list[tuple[UNSPSCEntry, float]] = []
+    for entry in UNSPSC_CATALOG:
+        keyword_set = set(entry.keywords)
+        overlap = len(tokens.intersection(keyword_set))
+        if overlap == 0:
+            continue
+        precision = overlap / max(1, len(tokens))
+        recall = overlap / max(1, len(keyword_set))
+        score = min(1.0, max(0.2, (precision * 0.45) + (recall * 0.55)))
+        scored.append((entry, score))
+
+    scored.sort(key=lambda item: item[1], reverse=True)
+    return scored[: max(1, top_k)]
+
+
 def classify_unspsc(
     text: str,
     *,
@@ -71,21 +92,8 @@ def classify_unspsc(
 
     Confidence is heuristic and normalized to [0, 1].
     """
-    tokens = set(_normalize(text))
-    if not tokens:
-        return fallback_code, fallback_name, 0.2
-
-    best: UNSPSCEntry | None = None
-    best_score = 0.0
-    for entry in UNSPSC_CATALOG:
-        matches = sum(1 for keyword in entry.keywords if keyword in tokens)
-        if matches <= 0:
-            continue
-        score = matches / max(2, len(entry.keywords))
-        if score > best_score:
-            best_score = score
-            best = entry
-
-    if best is None:
+    candidates = unspsc_candidates(text=text, top_k=1)
+    if not candidates:
         return fallback_code, fallback_name, 0.3
-    return best.code, best.name, min(1.0, max(0.35, best_score + 0.25))
+    best, score = candidates[0]
+    return best.code, best.name, min(1.0, max(0.35, score + 0.2))

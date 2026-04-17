@@ -17,6 +17,7 @@ class SubmissionChainInput(BaseModel):
     resolve_after_confirm: bool = True
     auto_confirm: bool = True
     overrides: dict[str, Any] = Field(default_factory=dict)
+    use_own_model: bool = False
 
 
 class NeoxlinkSubmissionChain:
@@ -38,7 +39,13 @@ class NeoxlinkSubmissionChain:
                 metadata=payload.metadata,
                 resolve_after_confirm=payload.resolve_after_confirm,
                 confirm_handler=lambda _draft: payload.overrides,
+                use_own_model=payload.use_own_model,
             )
 
-        draft = self._pipeline.parse(text=payload.text, entry_kind=payload.entry_kind, metadata=payload.metadata)
+        draft = self._pipeline.parse(
+            text=payload.text,
+            entry_kind=payload.entry_kind,
+            metadata=payload.metadata,
+            use_own_model=payload.use_own_model,
+        )
         return PipelineOutcome(parse=draft, confirmed=None, resolve=None, skipped_by_user=True)

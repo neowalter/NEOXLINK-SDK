@@ -18,6 +18,7 @@ It is designed for:
 - direct app/backend integrations
 - Skill-style runtimes
 - MCP-style tool exposure
+- structured procurement intent to demand/supply matching
 
 ## Install
 
@@ -32,7 +33,21 @@ pip install -e .
 - **Composable runtime**: direct API client, pipeline orchestration, skill adapter, and MCP adapter.
 - **Professional operator ergonomics**: concise models, explicit stages, and predictable return payloads.
 
-## Architecture (v0.2)
+## Architecture (v0.4)
+
+## Structured Matching Engine (v0.3)
+
+The SDK now ships a staged `ProcurementIntentEngine` for controllable demand/supply matching:
+
+1. Intent parsing from fragmented natural language
+2. UNSPSC mapping with top candidate confidence list
+3. Clarification loop trigger + targeted questions
+4. Structured normalization into canonical query object
+5. Hybrid retrieval from pluggable data source
+6. Deterministic ranking with explanation signals
+
+This is intentionally model/provider agnostic through a `ModelAdapter` interface and supports
+pluggable connectors through a `DataSource` interface.
 
 ### `neoxlink_sdk.client.NeoXlinkClient`
 
@@ -72,6 +87,15 @@ MCP-friendly tool facade with two tool methods:
 - `neoxlink.parse_preview`
 - `neoxlink.confirmed_submit`
 
+### `neoxlink_sdk.credits` (Credit + BYOM Control)
+
+Credit layer for product billing rules:
+
+- every search and matching operation consumes credits
+- free tier gets `5` LLM extraction submits/day at zero cost
+- BYOM mode (`use_own_model=True`) skips platform extraction charge
+- `MeteredNeoXlinkClient` integrates billing enforcement with standard SDK calls
+
 ---
 
 ## Quick Start: Structured Workflow
@@ -102,6 +126,65 @@ confirmed = pipeline.confirm(
 # 3) optional resolve
 resolved = pipeline.resolve(confirmed.raw_entry_id)
 print(resolved.path, resolved.reason)
+```
+
+## Credits, Free Quota, and BYOM
+
+```python
+from neoxlink_sdk import CreditLedger, MeteredNeoXlinkClient, StructuredSubmissionPipeline
+
+ledger = CreditLedger()
+ledger.ensure_account("user_001", tier="free", starting_credits=30)
+
+client = MeteredNeoXlinkClient(
+    user_id="user_001",
+    ledger=ledger,
+    base_url="https://neoxailink.com",
+    api_key="ak_live_xxx",
+)
+pipeline = StructuredSubmissionPipeline(client)
+
+# Free user: first 5 extraction submits/day are free.
+pipeline.parse("Need startup advisor in Shanghai", entry_kind="demand")
+
+# BYOM: use your own model/API stack, skip extraction charge.
+pipeline.parse(
+    "Need startup advisor; route extraction via my own model endpoint",
+    entry_kind="demand",
+    use_own_model=True,
+)
+
+# Search + matching consume credits.
+client.search(query="startup advisor in Shanghai", entry_kind="supply")
+```
+
+## Quick Start: Procurement Intent Engine
+
+```python
+from neoxlink_sdk import InMemoryDataSource, MatchCandidate, ProcurementIntentEngine
+
+records = [
+    MatchCandidate(
+        partner_id="sup-001",
+        partner_type="supplier",
+        title="Shanghai Policy Advisory Group",
+        description="Startup compliance and policy support for market entry.",
+        unspsc_codes=["80101500"],
+        location="Shanghai",
+        performance_score=0.91,
+    ),
+]
+
+engine = ProcurementIntentEngine(data_source=InMemoryDataSource(records))
+result = engine.run(
+    text="Need startup policy advisor in Shanghai for urgent launch support.",
+    entry_kind="demand",
+    target="suppliers",
+    top_k=3,
+)
+
+print(result.normalized_intent.model_dump())
+print([m.model_dump() for m in result.matches])
 ```
 
 ## Chain-Style Usage (LangChain-like)
@@ -187,7 +270,11 @@ print([tool["name"] for tool in tools])
 
 preview_result = adapter.call_tool(
     "neoxlink.parse_preview",
-    {"text": "Need startup advisor in Shenzhen", "entry_kind": "demand"},
+    {
+        "text": "Need startup advisor in Shenzhen",
+        "entry_kind": "demand",
+        "use_own_model": True,
+    },
 )
 
 submit_result = adapter.call_tool(
@@ -196,6 +283,7 @@ submit_result = adapter.call_tool(
         "text": "Need startup advisor in Shenzhen",
         "entry_kind": "demand",
         "overrides": {"constraints": {"region": ["Shenzhen"]}},
+        "use_own_model": False,
     },
 )
 ```
@@ -216,6 +304,15 @@ code, name, confidence = classify_unspsc("Need startup policy consulting support
 print(code, name, confidence)
 ```
 
+If you need candidate list retrieval for disambiguation:
+
+```python
+from neoxlink_sdk import unspsc_candidates
+
+for entry, score in unspsc_candidates("Need growth marketing campaign support", top_k=3):
+    print(entry.code, entry.name, score)
+```
+
 ## Core Utilities
 
 `core/` remains available for shared matching/dedup primitives:
@@ -229,6 +326,8 @@ print(code, name, confidence)
 - `examples/01_structured_pipeline.py` - parse/confirm/resolve flow
 - `examples/02_skill_runtime.py` - skill runtime integration
 - `examples/03_chain_style.py` - chain-style invocation
+- `examples/04_procurement_intent_engine.py` - staged UNSPSC matching engine
+- `examples/05_credits_and_byom.py` - credit metering and free-tier quota
 
 ## License
 

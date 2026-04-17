@@ -29,6 +29,7 @@ def main() -> None:
             entry_kind="demand",
             auto_confirm=True,
             overrides={"constraints": {"region": ["Shenzhen"]}},
+            use_own_model=True,
         )
     )
     print("Confirmed status:", confirmed.status)

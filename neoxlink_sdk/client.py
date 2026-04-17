@@ -67,11 +67,16 @@ class NeoXlinkClient:
         raw_text: str,
         entry_kind: str = "demand",
         metadata: dict[str, Any] | None = None,
+        use_own_model: bool = False,
     ) -> dict[str, Any]:
+        payload_metadata = dict(metadata or {})
+        payload_metadata.setdefault("billing", {})
+        if isinstance(payload_metadata["billing"], dict):
+            payload_metadata["billing"].setdefault("use_own_model", use_own_model)
         payload: dict[str, Any] = {
             "entry_kind": entry_kind,
             "raw_text": raw_text,
-            "metadata": metadata or {},
+            "metadata": payload_metadata,
         }
         return self._request("POST", "/v1/entries/parse", json=payload)
 
@@ -93,12 +98,18 @@ class NeoXlinkClient:
         entry_kind: str = "demand",
         metadata: dict[str, Any] | None = None,
         overrides: dict[str, Any] | None = None,
+        use_own_model: bool = False,
     ) -> dict[str, Any]:
         """Run parse -> confirm in one call chain.
 
         Returns both parse preview and final confirmed entry payload.
         """
-        parse_payload = self.parse_entry(raw_text=raw_text, entry_kind=entry_kind, metadata=metadata)
+        parse_payload = self.parse_entry(
+            raw_text=raw_text,
+            entry_kind=entry_kind,
+            metadata=metadata,
+            use_own_model=use_own_model,
+        )
         confirmation_token = str(parse_payload["confirmation_token"])
         confirm_payload = self.confirm_entry(confirmation_token=confirmation_token, overrides=overrides)
         return {"parse": parse_payload, "confirm": confirm_payload}

@@ -27,14 +27,28 @@ class StructuredSubmissionPipeline:
         code, name, confidence = classify_unspsc(text)
         return UNSPSCClassification(code=code, name=name, confidence=confidence, source="sdk_heuristic")
 
-    def parse(self, text: str, entry_kind: str = "demand", metadata: dict[str, Any] | None = None) -> ParseDraft:
+    def parse(
+        self,
+        text: str,
+        entry_kind: str = "demand",
+        metadata: dict[str, Any] | None = None,
+        use_own_model: bool = False,
+    ) -> ParseDraft:
         base_unspsc = self._build_unspsc(text)
         parse_metadata = dict(metadata or {})
         parse_metadata.setdefault(
             "unspsc",
             {"code": base_unspsc.code, "name": base_unspsc.name, "confidence": base_unspsc.confidence},
         )
-        payload = self.client.parse_entry(raw_text=text, entry_kind=entry_kind, metadata=parse_metadata)
+        parse_metadata.setdefault("billing", {})
+        if isinstance(parse_metadata["billing"], dict):
+            parse_metadata["billing"].setdefault("use_own_model", use_own_model)
+        payload = self.client.parse_entry(
+            raw_text=text,
+            entry_kind=entry_kind,
+            metadata=parse_metadata,
+            use_own_model=use_own_model,
+        )
         preview = ParsedPreview.model_validate(payload["preview"])
         if preview.unspsc is None:
             refined = self._build_unspsc(f"{preview.intent} {preview.summary} {text}")
@@ -76,8 +90,9 @@ class StructuredSubmissionPipeline:
         metadata: dict[str, Any] | None = None,
         confirm_handler: ConfirmHandler | None = None,
         resolve_after_confirm: bool = True,
+        use_own_model: bool = False,
     ) -> PipelineOutcome:
-        draft = self.parse(text=text, entry_kind=entry_kind, metadata=metadata)
+        draft = self.parse(text=text, entry_kind=entry_kind, metadata=metadata, use_own_model=use_own_model)
         decision: ConfirmDecision = True
         if confirm_handler is not None:
             decision = confirm_handler(draft)
