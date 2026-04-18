@@ -208,7 +208,14 @@ outcome = chain.invoke(
 print(outcome.model_dump(mode="json"))
 ```
 
-## Skill 集成示例
+## Skill 集成（Claude Code 风格）
+
+该 SDK 提供了适配 Claude Code 工具运行时的稳定 Skill 合约：
+
+- 输入对象：`SkillRequest`
+- 输出对象：`SkillResponse`
+- 可预测状态值：`preview_ready`、`confirmed`、`skipped`
+- 显式人工确认开关：`auto_confirm=False`
 
 ```python
 from neoxlink_sdk import (
@@ -224,7 +231,7 @@ skill = NeoxlinkSkill(
     )
 )
 
-# 预览优先模式（人工确认循环）
+# Claude Code 友好模式：首轮先返回预览，进入确认循环
 preview = skill.run(
     SkillRequest(
         text="Offer enterprise packaging optimization consulting.",
@@ -234,46 +241,73 @@ preview = skill.run(
 )
 print(preview.status)  # preview_ready
 
-# 自动确认模式
-final = skill.run(
+# 二次调用确认并可选执行 resolve
+confirmed = skill.run(
     SkillRequest(
         text="Need AI policy advisory for startup launch.",
         entry_kind="demand",
         auto_confirm=True,
         overrides={"category": "consulting"},
+        resolve_after_confirm=True,
     )
 )
-print(final.status)  # confirmed
+print(confirmed.status)  # confirmed
 ```
 
-## MCP 集成示例
+## MCP 集成（Claude Code + OpenClaw）
+
+### 使用 OpenClaw 快速安装
+
+```bash
+pip install neoxlink-sdk
+# 如果尚未安装 OpenClaw：
+pip install openclaw
+```
+
+### Claude Code 标准 MCP 工具面
+
+`NeoxlinkMCPAdapter` 提供稳定、显式的工具名：
+
+- `neoxlink.parse_preview`
+- `neoxlink.confirmed_submit`
+- `neoxlink.match_intent`（当配置 `ProcurementIntentEngine` 时可用）
 
 ```python
 from neoxlink_sdk import (
+    InMemoryDataSource,
+    MatchCandidate,
     NeoXlinkClient,
     NeoxlinkMCPAdapter,
     NeoxlinkSkill,
+    ProcurementIntentEngine,
     StructuredSubmissionPipeline,
 )
 
-adapter = NeoxlinkMCPAdapter(
-    NeoxlinkSkill(
-        StructuredSubmissionPipeline(
-            NeoXlinkClient(base_url="https://neoxailink.com", api_key="ak_live_xxx")
-        )
+client = NeoXlinkClient(base_url="https://neoxailink.com", api_key="ak_live_xxx")
+skill = NeoxlinkSkill(StructuredSubmissionPipeline(client))
+
+engine = ProcurementIntentEngine(
+    data_source=InMemoryDataSource(
+        [
+            MatchCandidate(
+                partner_id="sup-001",
+                partner_type="supplier",
+                title="Shanghai Policy Advisory Group",
+                description="Startup compliance and policy support.",
+                unspsc_codes=["80101500"],
+                location="Shanghai",
+                performance_score=0.91,
+            )
+        ]
     )
 )
 
-tools = adapter.list_tools()
-print([tool["name"] for tool in tools])
+adapter = NeoxlinkMCPAdapter(skill=skill, engine=engine)
+print([tool["name"] for tool in adapter.list_tools()])
 
 preview_result = adapter.call_tool(
     "neoxlink.parse_preview",
-    {
-        "text": "Need startup advisor in Shenzhen",
-        "entry_kind": "demand",
-        "use_own_model": True,
-    },
+    {"text": "Need startup advisor in Shenzhen", "entry_kind": "demand"},
 )
 
 submit_result = adapter.call_tool(
@@ -282,7 +316,16 @@ submit_result = adapter.call_tool(
         "text": "Need startup advisor in Shenzhen",
         "entry_kind": "demand",
         "overrides": {"constraints": {"region": ["Shenzhen"]}},
-        "use_own_model": False,
+    },
+)
+
+match_result = adapter.call_tool(
+    "neoxlink.match_intent",
+    {
+        "text": "Need urgent startup policy advisor in Shanghai",
+        "entry_kind": "demand",
+        "target": "suppliers",
+        "top_k": 5,
     },
 )
 ```
