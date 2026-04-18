@@ -1,106 +1,103 @@
 # neoxlink-sdk
 
-Public Python SDK for `neoxailink.com` demand/supply workflows.
+`neoxailink.com` 供需工作流的公开 Python SDK。
 
-中文文档请见：[`README.zh-CN.md`](README.zh-CN.md)
+该 SDK 现已支持完整的结构化流程：
 
-This SDK now supports a full structured flow:
+1. 用户提交自然语言文本
+2. 后端 LLM 解析并优化为结构化预览
+3. 用户（或 Agent）确认/编辑覆盖字段
+4. 记录被确认为结构化数据
+5. 可选的 resolve 步骤（AI 直答或回退引导）
 
-1. User submits natural language text
-2. Backend LLM parses and refines into structured preview
-3. User (or agent) confirms/edit overrides
-4. Record is confirmed into structured data
-5. Optional resolve step (AI-direct or fallback guidance)
+SDK 使用 UNSPSC 作为需求（demand）与供给（supply）两侧的标准化规范，
+采用标准 `code + name` 配对。
 
-UNSPSC is used as the normalization standard for both needs (demand) and
-solutions (supply), using standard code + name pairs.
+适用场景：
 
-It is designed for:
+- 直接集成到应用/后端
+- Skill 风格运行时
+- MCP 风格工具暴露
+- 结构化采购意图到供需匹配
 
-- direct app/backend integrations
-- Skill-style runtimes
-- MCP-style tool exposure
-- structured procurement intent to demand/supply matching
-
-## Install
+## 安装
 
 ```bash
 pip install -e .
 ```
 
-## Design Principles
+## 设计原则
 
-- **Natural-language first**: every core entry point accepts free text.
-- **Structured-by-default**: parse outputs are typed and include UNSPSC standardization.
-- **Composable runtime**: direct API client, pipeline orchestration, skill adapter, and MCP adapter.
-- **Professional operator ergonomics**: concise models, explicit stages, and predictable return payloads.
+- **自然语言优先**：所有核心入口都支持自由文本输入。
+- **默认结构化**：解析输出为强类型，并包含 UNSPSC 标准化结果。
+- **可组合运行时**：支持直接 API Client、Pipeline 编排、Skill Adapter 与 MCP Adapter。
+- **面向生产运维体验**：模型精简、阶段清晰、返回结构可预测。
 
-## Architecture (v0.4)
+## 架构（v0.4）
 
-## Structured Matching Engine (v0.3)
+## 结构化匹配引擎（v0.3）
 
-The SDK now ships a staged `ProcurementIntentEngine` for controllable demand/supply matching:
+SDK 提供了可控的分阶段 `ProcurementIntentEngine` 供需匹配引擎：
 
-1. Intent parsing from fragmented natural language
-2. UNSPSC mapping with top candidate confidence list
-3. Clarification loop trigger + targeted questions
-4. Structured normalization into canonical query object
-5. Hybrid retrieval from pluggable data source
-6. Deterministic ranking with explanation signals
+1. 从碎片化自然语言中解析意图
+2. 输出带置信度的 UNSPSC 候选映射
+3. 触发澄清循环并生成精准问题
+4. 归一化为下游可消费的标准查询对象
+5. 从可插拔数据源进行混合检索
+6. 基于解释信号执行确定性排序
 
-This is intentionally model/provider agnostic through a `ModelAdapter` interface and supports
-pluggable connectors through a `DataSource` interface.
+该设计通过 `ModelAdapter` 保持模型/供应商无关，并通过 `DataSource` 支持可插拔连接器。
 
 ### `neoxlink_sdk.client.NeoXlinkClient`
 
-HTTP layer for `neoxailink.com` APIs, including:
+`neoxailink.com` API 的 HTTP 客户端层，包含：
 
 - `parse_entry()`
 - `confirm_entry()`
 - `resolve_entry()`
-- `structured_submit()` (parse + confirm)
-- plus legacy methods: `submit_entry()`, `get_entry()`, `search()`
+- `structured_submit()`（parse + confirm）
+- 以及兼容旧版方法：`submit_entry()`、`get_entry()`、`search()`
 
 ### `neoxlink_sdk.pipeline.StructuredSubmissionPipeline`
 
-Orchestration layer for parse -> confirm -> resolve with explicit state objects:
+parse -> confirm -> resolve 的编排层，带显式状态对象：
 
 - `ParseDraft`
 - `ConfirmedEntry`
 - `ResolveResult`
 - `PipelineOutcome`
-- built-in UNSPSC classification enrichment (`code` + `name`)
+- 内建 UNSPSC 分类增强（`code` + `name`）
 
 ### `neoxlink_sdk.chains.NeoxlinkSubmissionChain`
 
-LangChain-like invocation style (`invoke`) for orchestration-heavy applications.
+面向编排场景的 LangChain 风格调用接口（`invoke`）。
 
 ### `neoxlink_sdk.skill.NeoxlinkSkill`
 
-Skill adapter around the pipeline:
+围绕 pipeline 的 Skill 适配层：
 
-- return preview-only for user confirmation
-- or auto-confirm and return full outcome
+- 仅返回预览，供人工确认
+- 或自动确认并返回完整结果
 
 ### `neoxlink_sdk.mcp.NeoxlinkMCPAdapter`
 
-MCP-friendly tool facade with two tool methods:
+面向 MCP 的工具门面，提供两个工具方法：
 
 - `neoxlink.parse_preview`
 - `neoxlink.confirmed_submit`
 
-### `neoxlink_sdk.credits` (Credit + BYOM Control)
+### `neoxlink_sdk.credits`（积分 + BYOM 控制）
 
-Credit layer for product billing rules:
+用于产品计费规则的积分层：
 
-- every search and matching operation consumes credits
-- free tier gets `5` LLM extraction submits/day at zero cost
-- BYOM mode (`use_own_model=True`) skips platform extraction charge
-- `MeteredNeoXlinkClient` integrates billing enforcement with standard SDK calls
+- 每次搜索和匹配都会消耗积分
+- 免费层每天可 `0` 成本提交 `5` 次 LLM 提取请求
+- BYOM 模式（`use_own_model=True`）跳过平台提取计费
+- `MeteredNeoXlinkClient` 将计费约束集成进标准 SDK 调用
 
 ---
 
-## Quick Start: Structured Workflow
+## 快速开始：结构化工作流
 
 ```python
 from neoxlink_sdk import NeoXlinkClient, StructuredSubmissionPipeline
@@ -111,7 +108,7 @@ client = NeoXlinkClient(
 )
 pipeline = StructuredSubmissionPipeline(client)
 
-# 1) parse/preview (LLM-refined structure)
+# 1) parse/preview（LLM 优化后的结构化结果）
 draft = pipeline.parse(
     text="I need a startup advisor for policy support in Shanghai.",
     entry_kind="demand",
@@ -119,18 +116,18 @@ draft = pipeline.parse(
 )
 print(draft.preview.unspsc.code, draft.preview.unspsc.name)
 
-# 2) user confirms (optional overrides)
+# 2) 用户确认（可选覆盖）
 confirmed = pipeline.confirm(
     draft=draft,
     overrides={"constraints": {"region": ["Shanghai"]}},
 )
 
-# 3) optional resolve
+# 3) 可选 resolve
 resolved = pipeline.resolve(confirmed.raw_entry_id)
 print(resolved.path, resolved.reason)
 ```
 
-## Credits, Free Quota, and BYOM
+## 积分、免费额度与 BYOM
 
 ```python
 from neoxlink_sdk import CreditLedger, MeteredNeoXlinkClient, StructuredSubmissionPipeline
@@ -146,21 +143,21 @@ client = MeteredNeoXlinkClient(
 )
 pipeline = StructuredSubmissionPipeline(client)
 
-# Free user: first 5 extraction submits/day are free.
+# 免费用户：每天前 5 次提取提交免费
 pipeline.parse("Need startup advisor in Shanghai", entry_kind="demand")
 
-# BYOM: use your own model/API stack, skip extraction charge.
+# BYOM：接入你自己的模型/API 栈，跳过提取计费
 pipeline.parse(
     "Need startup advisor; route extraction via my own model endpoint",
     entry_kind="demand",
     use_own_model=True,
 )
 
-# Search + matching consume credits.
+# 搜索 + 匹配会消耗积分
 client.search(query="startup advisor in Shanghai", entry_kind="supply")
 ```
 
-## Quick Start: Procurement Intent Engine
+## 快速开始：采购意图引擎
 
 ```python
 from neoxlink_sdk import InMemoryDataSource, MatchCandidate, ProcurementIntentEngine
@@ -189,7 +186,7 @@ print(result.normalized_intent.model_dump())
 print([m.model_dump() for m in result.matches])
 ```
 
-## Chain-Style Usage (LangChain-like)
+## Chain 风格用法（类似 LangChain）
 
 ```python
 from neoxlink_sdk import NeoXlinkClient, NeoxlinkSubmissionChain, StructuredSubmissionPipeline
@@ -211,7 +208,7 @@ outcome = chain.invoke(
 print(outcome.model_dump(mode="json"))
 ```
 
-## Skill Integration Example
+## Skill 集成示例
 
 ```python
 from neoxlink_sdk import (
@@ -227,7 +224,7 @@ skill = NeoxlinkSkill(
     )
 )
 
-# Preview-first mode (human confirmation loop)
+# 预览优先模式（人工确认循环）
 preview = skill.run(
     SkillRequest(
         text="Offer enterprise packaging optimization consulting.",
@@ -237,7 +234,7 @@ preview = skill.run(
 )
 print(preview.status)  # preview_ready
 
-# Auto-confirm mode
+# 自动确认模式
 final = skill.run(
     SkillRequest(
         text="Need AI policy advisory for startup launch.",
@@ -249,7 +246,7 @@ final = skill.run(
 print(final.status)  # confirmed
 ```
 
-## MCP Integration Example
+## MCP 集成示例
 
 ```python
 from neoxlink_sdk import (
@@ -290,14 +287,14 @@ submit_result = adapter.call_tool(
 )
 ```
 
-## UNSPSC Standardization
+## UNSPSC 标准化
 
-The SDK classifies both demand and supply text into UNSPSC:
+SDK 会将需求和供给文本都分类到 UNSPSC：
 
-- during parse stage (`draft.preview.unspsc`)
-- and forwards `unspsc_code` / `unspsc_name` in confirm overrides
+- 在 parse 阶段（`draft.preview.unspsc`）
+- 并在 confirm overrides 中透传 `unspsc_code` / `unspsc_name`
 
-If you need standalone classification:
+如需单独分类：
 
 ```python
 from neoxlink_sdk import classify_unspsc
@@ -306,7 +303,7 @@ code, name, confidence = classify_unspsc("Need startup policy consulting support
 print(code, name, confidence)
 ```
 
-If you need candidate list retrieval for disambiguation:
+如果需要用于消歧的候选列表检索：
 
 ```python
 from neoxlink_sdk import unspsc_candidates
@@ -315,22 +312,22 @@ for entry, score in unspsc_candidates("Need growth marketing campaign support", 
     print(entry.code, entry.name, score)
 ```
 
-## Core Utilities
+## 核心工具
 
-`core/` remains available for shared matching/dedup primitives:
+`core/` 目录仍可用于共享的匹配/去重基础能力：
 
 - `core/schema.py`
 - `core/dedup.py`
 - `core/matching.py`
 
-## Examples
+## 示例
 
-- `examples/01_structured_pipeline.py` - parse/confirm/resolve flow
-- `examples/02_skill_runtime.py` - skill runtime integration
-- `examples/03_chain_style.py` - chain-style invocation
-- `examples/04_procurement_intent_engine.py` - staged UNSPSC matching engine
-- `examples/05_credits_and_byom.py` - credit metering and free-tier quota
+- `examples/01_structured_pipeline.py` - parse/confirm/resolve 流程
+- `examples/02_skill_runtime.py` - skill 运行时集成
+- `examples/03_chain_style.py` - chain 风格调用
+- `examples/04_procurement_intent_engine.py` - 分阶段 UNSPSC 匹配引擎
+- `examples/05_credits_and_byom.py` - 积分计费与免费层额度
 
-## License
+## 许可证
 
 MIT
