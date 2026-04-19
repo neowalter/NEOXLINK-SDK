@@ -487,6 +487,10 @@ pip install -e ".[model_examples]"
 python examples/08_startup_policy_realworld.py
 ```
 
+## 二维码
+
+![NeoXlink 二维码](assets/qrcode.jpg)
+
 ## 许可证
 
 MIT
