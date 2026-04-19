@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-import re
 
 
 @dataclass(frozen=True)
@@ -57,8 +56,10 @@ UNSPSC_CATALOG: tuple[UNSPSCEntry, ...] = (
 
 
 def _normalize(text: str) -> list[str]:
-    tokens = re.findall(r"[a-zA-Z0-9]+", text.lower())
-    return [token for token in tokens if token]
+    lowered = text.lower()
+    for punct in (".", ",", ";", ":", "!", "?", "(", ")", "[", "]", "{", "}", "\"", "'"):
+        lowered = lowered.replace(punct, " ")
+    return [token for token in lowered.split() if token]
 
 
 def unspsc_candidates(text: str, top_k: int = 3) -> list[tuple[UNSPSCEntry, float]]:

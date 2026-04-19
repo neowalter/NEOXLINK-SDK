@@ -9,9 +9,7 @@ from .models import (
     ParsedPreview,
     PipelineOutcome,
     ResolveResult,
-    UNSPSCClassification,
 )
-from .unspsc import classify_unspsc
 
 ConfirmDecision = bool | dict[str, Any]
 ConfirmHandler = Callable[[ParseDraft], ConfirmDecision]
@@ -23,10 +21,6 @@ class StructuredSubmissionPipeline:
     def __init__(self, client: NeoXlinkClient) -> None:
         self.client = client
 
-    def _build_unspsc(self, text: str) -> UNSPSCClassification:
-        code, name, confidence = classify_unspsc(text)
-        return UNSPSCClassification(code=code, name=name, confidence=confidence, source="sdk_heuristic")
-
     def parse(
         self,
         text: str,
@@ -34,12 +28,7 @@ class StructuredSubmissionPipeline:
         metadata: dict[str, Any] | None = None,
         use_own_model: bool = False,
     ) -> ParseDraft:
-        base_unspsc = self._build_unspsc(text)
         parse_metadata = dict(metadata or {})
-        parse_metadata.setdefault(
-            "unspsc",
-            {"code": base_unspsc.code, "name": base_unspsc.name, "confidence": base_unspsc.confidence},
-        )
         parse_metadata.setdefault("billing", {})
         if isinstance(parse_metadata["billing"], dict):
             parse_metadata["billing"].setdefault("use_own_model", use_own_model)
@@ -50,9 +39,6 @@ class StructuredSubmissionPipeline:
             use_own_model=use_own_model,
         )
         preview = ParsedPreview.model_validate(payload["preview"])
-        if preview.unspsc is None:
-            refined = self._build_unspsc(f"{preview.intent} {preview.summary} {text}")
-            preview.unspsc = refined
         return ParseDraft(
             confirmation_token=str(payload["confirmation_token"]),
             preview=preview,

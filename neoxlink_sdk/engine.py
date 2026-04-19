@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import re
 from time import perf_counter
-from typing import Any, Protocol
+from typing import Any, Callable, Protocol
 
 from .models import (
     ClarificationQuestion,
@@ -20,15 +19,18 @@ from .unspsc import unspsc_candidates
 
 
 def _tokenize(text: str) -> set[str]:
-    return {token for token in re.findall(r"[a-zA-Z0-9]+", text.lower()) if token}
+    lowered = text.lower()
+    for punct in (".", ",", ";", ":", "!", "?", "(", ")", "[", "]", "{", "}", "\"", "'"):
+        lowered = lowered.replace(punct, " ")
+    return {token for token in lowered.split() if token}
 
 
 class ModelAdapter(Protocol):
     def parse_intent(self, text: str) -> ParsedIntent:
         """Parse free text into structured intent."""
 
-    def disambiguate_unspsc(self, text: str, candidates: list[UNSPSCCandidate]) -> list[UNSPSCCandidate]:
-        """Rerank or adjust UNSPSC candidates."""
+    def infer_unspsc_candidates(self, text: str, top_k: int = 5) -> list[UNSPSCCandidate]:
+        """Infer UNSPSC candidates from user input."""
 
     def score_match(self, normalized_intent: NormalizedIntent, candidate: MatchCandidate) -> dict[str, float]:
         """Return score signals for ranking."""
@@ -43,24 +45,19 @@ class ModelAdapter(Protocol):
 
 
 class HeuristicModelAdapter:
-    """Deterministic model adapter for local SDK usage and tests."""
+    """Fallback model adapter used when no LLM provider is configured.
+
+    This intentionally stays lightweight and only provides conservative defaults.
+    """
 
     provider_name = "local"
     model_name = "heuristic-v1"
 
     def parse_intent(self, text: str) -> ParsedIntent:
         tokens = _tokenize(text)
-        quantity_match = re.search(r"\b(\d+)\b", text)
-        budget_match = re.search(r"\$?\b(\d{2,}(?:[.,]\d{3})*)\b", text)
-        location_match = re.search(r"\b(in|at|near|from)\s+([A-Za-z][A-Za-z\s-]{1,40})", text)
-
         constraints: dict[str, Any] = {}
         if "urgent" in tokens or "asap" in tokens:
             constraints["urgency"] = "high"
-        if location_match:
-            constraints["location"] = location_match.group(2).strip()
-        if budget_match:
-            constraints["budget_hint"] = budget_match.group(1)
 
         ambiguity_signals: list[str] = []
         if len(tokens) < 5:
@@ -77,16 +74,21 @@ class HeuristicModelAdapter:
         return ParsedIntent(
             product_or_service=text.strip(),
             constraints=constraints,
-            quantity_signal=quantity_match.group(1) if quantity_match else None,
+            quantity_signal=None,
             location=constraints.get("location"),
-            budget_hint=constraints.get("budget_hint"),
+            budget_hint=None,
             temporal_context="short_term" if "urgent" in tokens else None,
             ambiguity_signals=ambiguity_signals,
             confidence=confidence,
             raw_text=text,
         )
 
-    def disambiguate_unspsc(self, text: str, candidates: list[UNSPSCCandidate]) -> list[UNSPSCCandidate]:
+    def infer_unspsc_candidates(self, text: str, top_k: int = 5) -> list[UNSPSCCandidate]:
+        retrieval = unspsc_candidates(text=text, top_k=top_k)
+        candidates = [UNSPSCCandidate(code=entry.code, name=entry.name, confidence=score) for entry, score in retrieval]
+        if not candidates:
+            return candidates
+
         tokens = _tokenize(text)
         adjusted: list[UNSPSCCandidate] = []
         for candidate in candidates:
@@ -99,7 +101,7 @@ class HeuristicModelAdapter:
                 boost += 0.04
             adjusted.append(candidate.model_copy(update={"confidence": min(1.0, candidate.confidence + boost)}))
         adjusted.sort(key=lambda item: item.confidence, reverse=True)
-        return adjusted
+        return adjusted[: max(1, top_k)]
 
     def score_match(self, normalized_intent: NormalizedIntent, candidate: MatchCandidate) -> dict[str, float]:
         intent_tokens = _tokenize(
@@ -141,6 +143,21 @@ class DataSource(Protocol):
         """Return candidate buyers or suppliers."""
 
 
+def default_ranking_strategy(
+    signals: dict[str, float],
+    _intent: NormalizedIntent,
+    _candidate: MatchCandidate,
+) -> float:
+    score = (
+        signals["semantic_relevance"] * 0.25
+        + signals["historical_performance"] * 0.20
+        + signals["recency"] * 0.15
+        + signals["intent_fit"] * 0.25
+        + signals["location_fit"] * 0.15
+    )
+    return min(1.0, max(0.0, score))
+
+
 class InMemoryDataSource:
     def __init__(self, records: list[MatchCandidate], source_name: str = "in_memory") -> None:
         self._records = records
@@ -166,10 +183,12 @@ class ProcurementIntentEngine:
         data_source: DataSource,
         model_adapter: ModelAdapter | None = None,
         clarification_threshold: float = 0.7,
+        ranking_strategy: Callable[[dict[str, float], NormalizedIntent, MatchCandidate], float] | None = None,
     ) -> None:
         self.data_source = data_source
         self.model_adapter = model_adapter or HeuristicModelAdapter()
         self.clarification_threshold = clarification_threshold
+        self.ranking_strategy = ranking_strategy or default_ranking_strategy
 
     def parse_intent(self, text: str) -> tuple[ParsedIntent, PipelineStageTrace, ModelCallTrace]:
         start = perf_counter()
@@ -192,12 +211,15 @@ class ProcurementIntentEngine:
 
     def map_unspsc(self, parsed: ParsedIntent) -> tuple[list[UNSPSCCandidate], PipelineStageTrace, ModelCallTrace]:
         start = perf_counter()
-        retrieval = unspsc_candidates(parsed.raw_text, top_k=5)
-        candidates = [
-            UNSPSCCandidate(code=entry.code, name=entry.name, confidence=confidence)
-            for entry, confidence in retrieval
-        ]
-        candidates = self.model_adapter.disambiguate_unspsc(parsed.raw_text, candidates)
+        # Primary path: let model adapter infer UNSPSC from user input.
+        candidates = self.model_adapter.infer_unspsc_candidates(parsed.raw_text, top_k=5)
+        if not candidates:
+            # Fallback path: deterministic keyword-based retrieval.
+            retrieval = unspsc_candidates(parsed.raw_text, top_k=5)
+            candidates = [
+                UNSPSCCandidate(code=entry.code, name=entry.name, confidence=confidence)
+                for entry, confidence in retrieval
+            ]
         elapsed = (perf_counter() - start) * 1000
         top_conf = candidates[0].confidence if candidates else 0.0
         trace = PipelineStageTrace(
@@ -337,18 +359,12 @@ class ProcurementIntentEngine:
         ranked: list[RankedMatch] = []
         for candidate in candidates:
             signals = self.model_adapter.score_match(normalized_intent, candidate)
-            score = (
-                signals["semantic_relevance"] * 0.25
-                + signals["historical_performance"] * 0.20
-                + signals["recency"] * 0.15
-                + signals["intent_fit"] * 0.25
-                + signals["location_fit"] * 0.15
-            )
+            score = self.ranking_strategy(signals, normalized_intent, candidate)
             ranked.append(
                 RankedMatch(
                     partner_id=candidate.partner_id,
                     partner_type=candidate.partner_type,
-                    score=min(1.0, max(0.0, score)),
+                    score=score,
                     confidence=min(1.0, max(0.0, (signals["intent_fit"] * 0.6) + (signals["semantic_relevance"] * 0.4))),
                     reason_signals=signals,
                     matched_attributes={"unspsc_codes": candidate.unspsc_codes, "location": candidate.location},

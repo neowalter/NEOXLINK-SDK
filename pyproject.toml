@@ -4,11 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "neoxlink-sdk"
-version = "0.4.0"
-description = "SDK for structured procurement intent workflows with UNSPSC, matching, and credit-aware BYOM controls"
+version = "0.6.0"
+description = "Open-source SDK for LLM-first intent parsing, taxonomy mapping, extraction, and public-data matching pipelines"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = ["httpx>=0.27.0", "pydantic>=2.8.2"]
+dependencies = ["httpx>=0.27.0", "pydantic>=2.8.2", "openai"]
 
-[tool.setuptools]
-packages = ["neoxlink_sdk"]
+[project.optional-dependencies]
+model_examples = ["anthropic", "google-genai", "ollama", "duckduckgo-search"]
+
+[tool.setuptools.packages.find]
+include = ["neoxlink_sdk*"]

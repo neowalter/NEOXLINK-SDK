@@ -1,0 +1,3 @@
+{"case_id":"case-001","text":"Need startup policy advisor in Shanghai","expected_service":"advisor","expected_taxonomy_code":"80101500"}
+{"case_id":"case-002","text":"Looking for packaging supplier for export goods","expected_service":"packaging","expected_taxonomy_code":"44121500"}
+{"case_id":"case-003","text":"Need software team for web platform build","expected_service":"software","expected_taxonomy_code":"81111500"}
