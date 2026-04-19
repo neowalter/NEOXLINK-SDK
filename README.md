@@ -529,6 +529,10 @@ pip install -e ".[model_examples]"
 python examples/08_startup_policy_realworld.py
 ```
 
+## QR Code
+
+![NeoXlink QR Code](/Users/neo/Desktop/NEO-AI/qrcode.jpg)
+
 ## License
 
 MIT
