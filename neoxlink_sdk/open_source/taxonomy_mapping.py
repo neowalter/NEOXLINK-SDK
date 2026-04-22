@@ -4,6 +4,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
+from ..catalog import CATALOG as _DEFAULT_UNSPSC_CATALOG
 from ..model_adapters import OpenAIChatCompletionsModel
 from .schemas import StructuredIntent
 
@@ -13,6 +14,13 @@ class TaxonomyNode:
     code: str
     name: str
     keywords: tuple[str, ...] = ()
+
+
+def load_default_taxonomy_nodes() -> list[TaxonomyNode]:
+    """Same UNSPSC subset as `neoxlink_sdk.unspsc` / `neoxlink_sdk.catalog` (single source)."""
+    return [
+        TaxonomyNode(code=e.code, name=e.name, keywords=e.keywords) for e in _DEFAULT_UNSPSC_CATALOG
+    ]
 
 
 class TaxonomyLoader:

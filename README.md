@@ -77,6 +77,16 @@ pip install -e .
 python examples/04_procurement_intent_engine.py
 ```
 
+**MCP (Model Context Protocol) stdio server**
+
+```bash
+pip install 'neoxlink-sdk[mcp]'
+export NEOXLINK_API_KEY=your_key
+neoxlink-mcp
+```
+
+Point your MCP host (Claude Desktop, Cursor, etc.) at the `neoxlink-mcp` command, or use the config template in [`mcp/config.neoxlink.example.json`](mcp/config.neoxlink.example.json). Optional: `NEOXLINK_ENABLE_MATCH=1` to expose `neoxlink.match_intent` (local matching pipeline; supply your own data source in custom deployments).
+
 ## Use cases
 
 - **Global procurement & sourcing** — standardize requisitions and supplier catalogs across regions using **UNSPSC**.  
@@ -126,6 +136,7 @@ python examples/04_procurement_intent_engine.py
 - `examples/07_open_source_pipeline.py` — open-source reference pipeline  
 - `examples/08_startup_policy_realworld.py` — interactive advisor  
 - `examples/model_apis/` — OpenAI, Anthropic, Gemini, Ollama, router  
+- `neoxlink-mcp` + `mcp/config.neoxlink.example.json` — MCP stdio server for agent hosts  
 
 Optional extras for model examples:
 

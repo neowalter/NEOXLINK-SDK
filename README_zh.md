@@ -77,6 +77,16 @@ pip install -e .
 python examples/04_procurement_intent_engine.py
 ```
 
+**MCP（Model Context Protocol）stdio 服务**
+
+```bash
+pip install 'neoxlink-sdk[mcp]'
+export NEOXLINK_API_KEY=你的密钥
+neoxlink-mcp
+```
+
+在 Claude Desktop、Cursor 等宿主中把 MCP 服务指向 `neoxlink-mcp` 命令，或参考配置模板 [`mcp/config.neoxlink.example.json`](mcp/config.neoxlink.example.json)。可选：设置 `NEOXLINK_ENABLE_MATCH=1` 以暴露 `neoxlink.match_intent`（本地匹配管线；自托管时接入自有数据源）。
+
 ## 应用场景
 
 - **全球采购与寻源** — 以 **UNSPSC** 统一多地区请购与供应商目录。  
@@ -126,6 +136,7 @@ python examples/04_procurement_intent_engine.py
 - `examples/07_open_source_pipeline.py` — 开源参考流水线  
 - `examples/08_startup_policy_realworld.py` — 交互式顾问  
 - `examples/model_apis/` — OpenAI、Anthropic、Gemini、Ollama、路由  
+- `neoxlink-mcp` + `mcp/config.neoxlink.example.json` — 面向 Agent 宿主的 MCP stdio 服务  
 
 模型示例可选依赖：
 

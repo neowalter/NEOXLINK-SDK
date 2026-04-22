@@ -7,7 +7,7 @@
 
 ## Module Two: Taxonomy Mapping
 - code: `neoxlink_sdk/open_source/taxonomy_mapping.py`
-- taxonomy assets: `taxonomy/`
+- taxonomy assets (source of truth): `neoxlink_sdk/data/unspsc_catalog.json` (see [taxonomy/README.md](taxonomy/README.md) for the removed duplicate path)
 
 ## Module Three: Data Connectors
 - code: `neoxlink_sdk/open_source/connectors.py`

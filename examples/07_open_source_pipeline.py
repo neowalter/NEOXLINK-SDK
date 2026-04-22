@@ -4,8 +4,8 @@ from neoxlink_sdk.open_source import (
     IntentParser,
     MatchingEngine,
     ProviderSchema,
-    TaxonomyLoader,
     TaxonomyMapper,
+    load_default_taxonomy_nodes,
 )
 
 
@@ -17,7 +17,7 @@ def main() -> None:
     )
 
     parser = IntentParser(model=model)
-    taxonomy_nodes = TaxonomyLoader("taxonomy/unspsc_open_source.json").load()
+    taxonomy_nodes = load_default_taxonomy_nodes()
     mapper = TaxonomyMapper(model=model, nodes=taxonomy_nodes)
     extraction = ExtractionEngine(intent_parser=parser, taxonomy_mapper=mapper)
     matching = MatchingEngine(model=model)

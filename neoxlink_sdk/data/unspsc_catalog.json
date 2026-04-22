@@ -1,0 +1,58 @@
+[
+  {
+    "code": "80101500",
+    "name": "Business and corporate management consultation services",
+    "keywords": [
+      "advisor", "advisory", "consulting", "consultant", "strategy", "policy", "startup"
+    ]
+  },
+  {
+    "code": "81111500",
+    "name": "Software or applications development services",
+    "keywords": [
+      "software", "application", "app", "development", "developer", "engineering"
+    ]
+  },
+  {
+    "code": "81112100",
+    "name": "Internet services",
+    "keywords": [
+      "internet", "web", "website", "online", "cloud", "platform"
+    ]
+  },
+  {
+    "code": "80141600",
+    "name": "Sales and business promotion activities",
+    "keywords": [
+      "marketing", "promotion", "growth", "campaign", "lead", "acquisition"
+    ]
+  },
+  {
+    "code": "44121500",
+    "name": "Packaging materials",
+    "keywords": [
+      "packaging", "box", "boxes", "carton", "kraft", "label", "shipment"
+    ]
+  },
+  {
+    "code": "86101700",
+    "name": "Training services",
+    "keywords": [
+      "training", "coach", "coaching", "workshop", "education", "course"
+    ]
+  },
+  {
+    "code": "81161700",
+    "name": "Telecommunications support services",
+    "keywords": [
+      "telecom", "network", "infrastructure", "operations", "support"
+    ]
+  },
+  {
+    "code": "85121800",
+    "name": "Medical laboratories and providers",
+    "keywords": [
+      "medical", "health", "clinic", "diagnostic", "laboratory"
+    ]
+  }
+]
