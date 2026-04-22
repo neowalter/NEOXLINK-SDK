@@ -14,4 +14,4 @@ dependencies = ["httpx>=0.27.0", "pydantic>=2.8.2", "openai"]
 model_examples = ["anthropic", "google-genai", "ollama", "duckduckgo-search"]
 
 [tool.setuptools.packages.find]
-include = ["neoxlink_sdk*"]
+include = ["neoxlink_sdk*", "neoxlink"]
