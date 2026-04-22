@@ -1,16 +1,18 @@
-from .client import NeoXlinkClient
+from . import open_source
+from .async_client import AsyncNeoXlinkClient
+from .async_pipeline import AsyncStructuredSubmissionPipeline
 from .chains import NeoxlinkSubmissionChain, SubmissionChainInput
+from .client import NeoXlinkClient
 from .credits import CreditAccount, CreditLedger, CreditLimitExceeded, CreditPolicy, MeteredNeoXlinkClient
 from .easy import create_engine
 from .engine import (
-    default_ranking_strategy,
     HeuristicModelAdapter,
     InMemoryDataSource,
     ProcurementIntentEngine,
+    default_ranking_strategy,
 )
 from .mcp import NeoxlinkMCPAdapter
 from .model_adapters import OpenAIChatCompletionsModel, OpenAICompatibleModelAdapter
-from . import open_source
 from .models import (
     ClarificationQuestion,
     ClarificationState,
@@ -18,11 +20,11 @@ from .models import (
     MatchCandidate,
     ModelCallTrace,
     NormalizedIntent,
-    ParseDraft,
     ParsedIntent,
     ParsedPreview,
-    PipelineStageTrace,
+    ParseDraft,
     PipelineOutcome,
+    PipelineStageTrace,
     ProcurementEngineResult,
     RankedMatch,
     ResolveResult,
@@ -49,6 +51,8 @@ __all__ = [
     "InMemoryDataSource",
     "MatchCandidate",
     "ModelCallTrace",
+    "AsyncNeoXlinkClient",
+    "AsyncStructuredSubmissionPipeline",
     "NeoXlinkClient",
     "MeteredNeoXlinkClient",
     "NormalizedIntent",
