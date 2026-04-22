@@ -4,7 +4,6 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-
 SCHEMA_VERSION = "v1.0.0"
 
 

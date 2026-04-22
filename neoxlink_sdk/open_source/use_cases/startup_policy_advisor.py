@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import logging
-from typing import Any
 import time
+from dataclasses import dataclass
+from typing import Any
 
 import httpx
 
@@ -66,7 +66,11 @@ class StartupPolicyAdvisor:
                 print(f"[Advisor] Step 2/5 result: evidence insufficient in round {round_id}.", flush=True)
                 print(f"[Advisor] Step 3/5 (round {round_id}): Collecting sources...", flush=True)
                 self._collect_sources_and_evidence(state, queries)
-                print(f"[Advisor] Step 3/5 complete. Sources: {len(state['sources'])}, evidence items: {len(state['evidence'])}.", flush=True)
+                print(
+                    f"[Advisor] Step 3/5 complete. Sources: {len(state['sources'])}, "
+                    f"evidence items: {len(state['evidence'])}.",
+                    flush=True,
+                )
                 print(f"[Advisor] Step 4/5 (round {round_id}): Building updated recommendation...", flush=True)
                 answer = self._build_answer(state)
                 print("\n[Advisor] Updated solution:\n")

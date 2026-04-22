@@ -4,12 +4,16 @@
 [![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Model Context Protocol](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-6f42c1.svg)](https://modelcontextprotocol.io/)
+[![UNSPSC 手册](https://img.shields.io/badge/docs-UNSPSC%20快速查阅-blue.svg)](docs/wiki/unspsc-quick-ref.md)
+[![MCP 集成](https://img.shields.io/badge/docs-MCP%20集成-6f42c1.svg)](docs/wiki/mcp-integration.md)
 
 **打通「对话」与「交易」之间的最后一公里** —— 将模糊自然语言变为 **标准化商业智能（Standardized Business Intelligence）** 与可执行的结构化业务流程。
 
 > **愿景：** NEOXLINK-SDK 是 AI 商业化的 **操作系统**。传统 AI 往往止步于「听懂需求」，与采购、交易等 **标准化商业系统** 之间存在巨大断层；本 SDK 以 **UNSPSC 全球标准（Code + Name）** 为主线，把自然语言压缩为 **结构化商业指令**，并通过 **Structured Preview（结构化预览）**、人工或 Agent 确认、写入 **结构化数据库**、以及 **AI Resolve（AI 直答或对接真实供应链）** 完成闭环。面向 Agent 时代，我们原生支持直连集成、**Skill 运行时** 与 **MCP（Model Context Protocol）** 工具暴露，构成 **UNSPSC 驱动的 Agent 经济** 基础设施。
 
-English: [`README.md`](README.md)
+English: [`README.md`](README.md) — 同仓中文手册与 MCP 说明见上列 Badge。
+
+- **系统架构图（Mermaid 占位，英文主文档）：** [`README.md` — System architecture](README.md#system-architecture-chat--transaction)
 
 ## 痛点与解法
 

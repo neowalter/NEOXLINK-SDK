@@ -37,7 +37,6 @@ class MatchingEngine:
     def match(self, request: RequestSchema, providers: list[ProviderSchema], top_k: int = 5) -> list[MatchResultSchema]:
         results: list[MatchResultSchema] = []
         for provider in providers:
-            proxy_candidate = provider.model_dump()
             signals = {
                 "semantic_relevance": 0.5,
                 "intent_fit": 0.5,

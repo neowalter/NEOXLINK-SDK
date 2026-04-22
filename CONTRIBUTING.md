@@ -2,7 +2,19 @@
 
 Thanks for contributing.
 
-Before starting, read:
+**Before a PR, run (from repo root):**
+
+```bash
+pip install -e ".[dev]"
+ruff check neoxlink_sdk tests
+pytest
+```
+
+**Product scope:** contributions should strengthen **UNSPSC (Code + Name) + structured intent + Skill/MCP** — not a generic “chatbot wrapper” around the same APIs.
+
+**Merge hygiene:** when a PR touches both documentation and `pyproject.toml` (dependencies or tooling), prefer small focused PRs or rebase in **docs → then tooling/deps** order to avoid repeated conflicts on `pyproject.toml`.
+
+## Before you start, read
 
 - `OPEN_SOURCE_SCOPE.md`
 - `REPOSITORY_ARCHITECTURE.md`

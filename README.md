@@ -4,12 +4,42 @@
 [![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Model Context Protocol](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-6f42c1.svg)](https://modelcontextprotocol.io/)
+[![UNSPSC handbook](https://img.shields.io/badge/docs-UNSPSC%20quick%20ref-blue.svg)](docs/wiki/unspsc-quick-ref.md)
+[![MCP integration](https://img.shields.io/badge/docs-MCP%20integration-6f42c1.svg)](docs/wiki/mcp-integration.md)
 
 **Bridging the gap between Chat and Transaction** — turn fuzzy natural language into **Standardized Business Intelligence** and executable procurement workflows.
 
 > **Vision:** NEOXLINK-SDK is the **operating system for AI commercialization**. It closes the last mile between “the model understood the request” and “the business system can act on it” by normalizing intent with the **UNSPSC global standard (Code + Name)**, **Structured Preview**, human or agent confirmation, durable structured records, and **AI Resolve** (direct answers or real supply-chain handoff). **Agent Interoperability** is first-class: integrate directly, run inside **Skill** runtimes, or expose capabilities via **MCP (Model Context Protocol)** tools.
 
-[中文文档 `README_zh.md`](README_zh.md)
+[中文文档 `README_zh.md`](README_zh.md) · [UNSPSC 快速查阅（同仓）](docs/wiki/unspsc-quick-ref.md) · [MCP 集成说明](docs/wiki/mcp-integration.md)
+
+## System architecture (chat → transaction)
+
+High-level data path from natural language to **standardized, actionable** records. (Diagram is a *logical* view; your deployment may split API, matching, and MCP host.)
+
+```mermaid
+flowchart LR
+  subgraph input [NL_input]
+    U[User_or_Agent]
+  end
+  subgraph sdk [NEOXLINK_SDK]
+    P[Parse_and_Structured_Preview]
+    C[Confirm_or_policy_gate]
+    S[Structured_record]
+    M[Match_or_resolve]
+  end
+  subgraph standard [Business_standard]
+    UNS[UNSPSC_Code_plus_Name]
+  end
+  U --> P
+  P --> UNS
+  P --> C
+  C --> S
+  S --> M
+  M --> U
+```
+
+*Placeholder for a future architecture diagram file:* add your swimlane (API vs agent vs ERP) in `docs/wiki/` and link it here as the “official” network picture for releases.
 
 ## The gap (and how we close it)
 
