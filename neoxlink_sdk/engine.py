@@ -15,14 +15,8 @@ from .models import (
     RankedMatch,
     UNSPSCCandidate,
 )
+from .tokenize import matching_token_set
 from .unspsc import unspsc_candidates
-
-
-def _tokenize(text: str) -> set[str]:
-    lowered = text.lower()
-    for punct in (".", ",", ";", ":", "!", "?", "(", ")", "[", "]", "{", "}", "\"", "'"):
-        lowered = lowered.replace(punct, " ")
-    return {token for token in lowered.split() if token}
 
 
 class ModelAdapter(Protocol):
@@ -54,7 +48,7 @@ class HeuristicModelAdapter:
     model_name = "heuristic-v1"
 
     def parse_intent(self, text: str) -> ParsedIntent:
-        tokens = _tokenize(text)
+        tokens = matching_token_set(text)
         constraints: dict[str, Any] = {}
         if "urgent" in tokens or "asap" in tokens:
             constraints["urgency"] = "high"
@@ -84,12 +78,11 @@ class HeuristicModelAdapter:
         )
 
     def infer_unspsc_candidates(self, text: str, top_k: int = 5) -> list[UNSPSCCandidate]:
-        retrieval = unspsc_candidates(text=text, top_k=top_k)
+        tokens = matching_token_set(text)
+        retrieval = unspsc_candidates(text=text, top_k=top_k, tokens=tokens)
         candidates = [UNSPSCCandidate(code=entry.code, name=entry.name, confidence=score) for entry, score in retrieval]
         if not candidates:
             return candidates
-
-        tokens = _tokenize(text)
         adjusted: list[UNSPSCCandidate] = []
         for candidate in candidates:
             boost = 0.0
@@ -104,7 +97,7 @@ class HeuristicModelAdapter:
         return adjusted[: max(1, top_k)]
 
     def score_match(self, normalized_intent: NormalizedIntent, candidate: MatchCandidate) -> dict[str, float]:
-        intent_tokens = _tokenize(
+        intent_tokens = matching_token_set(
             " ".join(
                 [
                     str(normalized_intent.attributes.get("product_or_service", "")),
@@ -113,7 +106,7 @@ class HeuristicModelAdapter:
                 ]
             )
         )
-        cand_tokens = _tokenize(f"{candidate.title} {candidate.description} {candidate.attributes}")
+        cand_tokens = matching_token_set(f"{candidate.title} {candidate.description} {candidate.attributes}")
         overlap = len(intent_tokens.intersection(cand_tokens))
         union = max(1, len(intent_tokens.union(cand_tokens)))
         semantic_relevance = overlap / union
@@ -245,7 +238,9 @@ class ProcurementIntentEngine:
     ) -> tuple[ClarificationState, PipelineStageTrace]:
         start = perf_counter()
         top_conf = unspsc_matches[0].confidence if unspsc_matches else 0.0
-        needs_clarification = parsed.confidence < self.clarification_threshold or top_conf < self.clarification_threshold
+        needs_clarification = (
+            parsed.confidence < self.clarification_threshold or top_conf < self.clarification_threshold
+        )
         questions: list[ClarificationQuestion] = []
         if needs_clarification:
             if not parsed.location:
@@ -310,7 +305,7 @@ class ProcurementIntentEngine:
         attributes = {
             "product_or_service": parsed.product_or_service,
             "quantity_signal": clarification.answers.get("quantity", parsed.quantity_signal),
-            "keywords": sorted(_tokenize(parsed.raw_text))[:20],
+            "keywords": sorted(matching_token_set(parsed.raw_text))[:20],
         }
         normalized = NormalizedIntent(
             entry_kind="supply" if entry_kind == "supply" else "demand",
@@ -340,7 +335,12 @@ class ProcurementIntentEngine:
         top_k: int = 10,
     ) -> tuple[list[MatchCandidate], PipelineStageTrace]:
         start = perf_counter()
-        candidates = self.data_source.search(normalized_intent=normalized_intent, target=target, limit=max(10, top_k * 3))
+        limit = max(10, top_k * 3)
+        candidates = self.data_source.search(
+            normalized_intent=normalized_intent,
+            target=target,
+            limit=limit,
+        )
         elapsed = (perf_counter() - start) * 1000
         trace = PipelineStageTrace(
             stage="matching_retrieval",
@@ -360,12 +360,13 @@ class ProcurementIntentEngine:
         for candidate in candidates:
             signals = self.model_adapter.score_match(normalized_intent, candidate)
             score = self.ranking_strategy(signals, normalized_intent, candidate)
+            conf_mix = (signals["intent_fit"] * 0.6) + (signals["semantic_relevance"] * 0.4)
             ranked.append(
                 RankedMatch(
                     partner_id=candidate.partner_id,
                     partner_type=candidate.partner_type,
                     score=score,
-                    confidence=min(1.0, max(0.0, (signals["intent_fit"] * 0.6) + (signals["semantic_relevance"] * 0.4))),
+                    confidence=min(1.0, max(0.0, conf_mix)),
                     reason_signals=signals,
                     matched_attributes={"unspsc_codes": candidate.unspsc_codes, "location": candidate.location},
                     source=getattr(self.data_source, "source_name", "unknown"),

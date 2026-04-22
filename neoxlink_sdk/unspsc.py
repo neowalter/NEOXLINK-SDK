@@ -2,18 +2,20 @@
 
 from __future__ import annotations
 
-from .catalog import CATALOG as UNSPSC_CATALOG
-from .catalog import KEYWORD_IDF, UNSPSCEntry
+from .catalog import (
+    ALL_LONG_KEYWORDS_DISTINCT,
+    ENTRY_KEYWORD_FROZENSETS,
+    ENTRY_LONG_KEYWORDS,
+    KEYWORD_IDF,
+    UNSPSCEntry,
+)
+from .catalog import (
+    CATALOG as UNSPSC_CATALOG,
+)
+from .tokenize import matching_token_set
 
 # Re-export for backward compatibility
 __all__ = ["UNSPSCEntry", "UNSPSC_CATALOG", "classify_unspsc", "unspsc_candidates"]
-
-
-def _normalize(text: str) -> list[str]:
-    lowered = text.lower()
-    for punct in (".", ",", ";", ":", "!", "?", "(", ")", "[", "]", "{", "}", "\"", "'"):
-        lowered = lowered.replace(punct, " ")
-    return [token for token in lowered.split() if token]
 
 
 def _phrase_idf_score(text_lower: str, entry: UNSPSCEntry, idf: dict[str, float]) -> float:
@@ -27,7 +29,7 @@ def _phrase_idf_score(text_lower: str, entry: UNSPSCEntry, idf: dict[str, float]
     return min(1.0, total / 3.0)
 
 
-def _idf_token_overlap(tokens: set[str], keyword_set: set[str], idf: dict[str, float]) -> float:
+def _idf_token_overlap(tokens: set[str], keyword_set: frozenset[str], idf: dict[str, float]) -> float:
     inter = tokens.intersection(keyword_set)
     if not inter:
         return 0.0
@@ -36,23 +38,35 @@ def _idf_token_overlap(tokens: set[str], keyword_set: set[str], idf: dict[str, f
     return num / den
 
 
-def unspsc_candidates(text: str, top_k: int = 3) -> list[tuple[UNSPSCEntry, float]]:
+def unspsc_candidates(
+    text: str,
+    top_k: int = 3,
+    *,
+    tokens: set[str] | None = None,
+) -> list[tuple[UNSPSCEntry, float]]:
     """Return top UNSPSC candidates with deterministic confidence values.
 
     Scoring blends token precision/recall on keyword sets with IDF-weighted overlap
     and a substring/phrase term for und tokenized product names.
+
+    Args:
+        text: Raw user text (same normalization is applied unless ``tokens`` is provided).
+        top_k: Number of candidates to return.
+        tokens: Precomputed token set from ``text`` to avoid double tokenization when the
+            caller already computed matching tokens (e.g. :class:`HeuristicModelAdapter`).
     """
     idf = KEYWORD_IDF
     text_lower = text.lower()
-    tokens = set(_normalize(text))
-    if not tokens and not any(len(k) >= 3 and k in text_lower for e in UNSPSC_CATALOG for k in e.keywords):
+    if tokens is None:
+        tokens = matching_token_set(text)
+    if not tokens and not any(kw in text_lower for kw in ALL_LONG_KEYWORDS_DISTINCT):
         return []
 
     scored: list[tuple[UNSPSCEntry, float]] = []
-    for entry in UNSPSC_CATALOG:
-        keyword_set = set(entry.keywords)
+    for i, entry in enumerate(UNSPSC_CATALOG):
+        keyword_set = ENTRY_KEYWORD_FROZENSETS[i]
         overlap = len(tokens.intersection(keyword_set))
-        if overlap == 0 and not any(len(k) >= 3 and k in text_lower for k in entry.keywords):
+        if overlap == 0 and not any(kw in text_lower for kw in ENTRY_LONG_KEYWORDS[i]):
             continue
 
         if overlap == 0:

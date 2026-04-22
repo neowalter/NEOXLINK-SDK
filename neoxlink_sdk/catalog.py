@@ -60,6 +60,28 @@ def keyword_idf(catalog: tuple[UNSPSCEntry, ...]) -> dict[str, float]:
     return {k: math.log(1.0 + (n - c + 0.5) / (c + 0.5)) for k, c in df.items()}
 
 
+def _entry_keyword_frozensets(catalog: tuple[UNSPSCEntry, ...]) -> tuple[frozenset[str], ...]:
+    return tuple(frozenset(e.keywords) for e in catalog)
+
+
+def _long_keywords_per_entry(catalog: tuple[UNSPSCEntry, ...]) -> tuple[tuple[str, ...], ...]:
+    return tuple(tuple(kw for kw in e.keywords if len(kw) >= 3) for e in catalog)
+
+
+def _distinct_long_keywords(catalog: tuple[UNSPSCEntry, ...]) -> tuple[str, ...]:
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for e in catalog:
+        for kw in e.keywords:
+            if len(kw) >= 3 and kw not in seen:
+                seen.add(kw)
+                ordered.append(kw)
+    return tuple(ordered)
+
+
 # Loaded once; tests can patch `load_unspsc_entries` by re-importing if needed, or pass paths in helpers.
 CATALOG: Final[tuple[UNSPSCEntry, ...]] = load_unspsc_entries()
 KEYWORD_IDF: Final[dict[str, float]] = keyword_idf(CATALOG)
+ENTRY_KEYWORD_FROZENSETS: Final[tuple[frozenset[str], ...]] = _entry_keyword_frozensets(CATALOG)
+ENTRY_LONG_KEYWORDS: Final[tuple[tuple[str, ...], ...]] = _long_keywords_per_entry(CATALOG)
+ALL_LONG_KEYWORDS_DISTINCT: Final[tuple[str, ...]] = _distinct_long_keywords(CATALOG)

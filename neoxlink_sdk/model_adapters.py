@@ -7,11 +7,14 @@ import logging
 import os
 import threading
 import time
-from typing import Any
+from typing import Any, Final
 
+from .catalog import CATALOG, UNSPSCEntry
 from .engine import HeuristicModelAdapter
 from .models import MatchCandidate, NormalizedIntent, ParsedIntent, UNSPSCCandidate
-from .unspsc import UNSPSC_CATALOG
+
+_CATALOG_BY_CODE: Final[dict[str, UNSPSCEntry]] = {e.code: e for e in CATALOG}
+_UNSPSC_OPTIONS_JSON: Final[str] = json.dumps([{"code": e.code, "name": e.name} for e in CATALOG])
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +96,12 @@ class OpenAIChatCompletionsModel:
         api_key: str | None = None,
         base_url: str = "https://openrouter.ai/api/v1",
     ) -> "OpenAIChatCompletionsModel":
-        return cls(model=model, api_key=api_key or os.getenv("OPENROUTER_API_KEY"), base_url=base_url, provider_name="openrouter")
+        return cls(
+            model=model,
+            api_key=api_key or os.getenv("OPENROUTER_API_KEY"),
+            base_url=base_url,
+            provider_name="openrouter",
+        )
 
     @classmethod
     def for_local(
@@ -218,28 +226,26 @@ class OpenAIChatCompletionsModel:
         return ParsedIntent.model_validate(data)
 
     def infer_unspsc_candidates(self, text: str, top_k: int = 5) -> list[UNSPSCCandidate]:
-        options = [{"code": entry.code, "name": entry.name} for entry in UNSPSC_CATALOG]
         prompt = (
             "Infer the top UNSPSC candidates for the procurement intent below. "
             "Return JSON only with key `candidates`.\n"
             "Each candidate item must include: code,name,confidence.\n"
             f"Intent: {text}\n"
-            f"Options: {json.dumps(options)}"
+            f"Options: {_UNSPSC_OPTIONS_JSON}"
         )
         payload = self._chat_json(prompt)
         ranked_items = payload.get("candidates")
         if not isinstance(ranked_items, list):
             return self._fallback.infer_unspsc_candidates(text, top_k=top_k)
 
-        catalog_by_code = {entry.code: entry for entry in UNSPSC_CATALOG}
         inferred: list[UNSPSCCandidate] = []
         for item in ranked_items:
             if not isinstance(item, dict):
                 continue
             code = str(item.get("code", ""))
-            if code not in catalog_by_code:
+            if code not in _CATALOG_BY_CODE:
                 continue
-            base = catalog_by_code[code]
+            base = _CATALOG_BY_CODE[code]
             confidence_raw = item.get("confidence", 0.5)
             try:
                 confidence = float(confidence_raw)
