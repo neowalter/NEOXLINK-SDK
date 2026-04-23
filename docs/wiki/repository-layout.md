@@ -13,6 +13,7 @@
 | `mcp/` | Example MCP host JSON templates. |
 | `docs/wiki/` | Versioned “wiki mirror” (UNSPSC, MCP, this layout) — [README](README.md). |
 | `community/`, `taxonomy/` | Community docs and taxonomy notes. |
+| `deprecated/` | Archived code **not** shipped on PyPI (e.g. historical `core/` schema experiments); see [deprecated/README.md](../../deprecated/README.md). |
 
 ## Layering: HTTP, catalog, orchestration
 

@@ -13,7 +13,7 @@
 
 English: [`README.md`](README.md) — 同仓中文手册与 MCP 说明见上列 Badge。
 
-- **系统架构图（Mermaid 占位，英文主文档）：** [`README.md` — System architecture](README.md#system-architecture-chat--transaction)
+- **分层架构（HTTP / 本地 UNSPSC / 编排，与 CI 一致）：** [`docs/wiki/repository-layout.md`](docs/wiki/repository-layout.md)；概览图亦见 [`README.md` — System architecture](README.md#system-architecture-chat--transaction)
 
 ## 痛点与解法
 

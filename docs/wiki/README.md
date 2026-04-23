@@ -6,7 +6,7 @@
 | --- | --- |
 | [`unspsc-quick-ref.md`](unspsc-quick-ref.md) | UNSPSC usage / quick reference |
 | [`mcp-integration.md`](mcp-integration.md) | MCP stdio server and tool surface |
-| [`repository-layout.md`](repository-layout.md) | Top-level tree, HTTP vs catalog layers, how to run `pytest` on Python 3.11+ |
+| [`repository-layout.md`](repository-layout.md) | Top-level tree, HTTP vs catalog layers, `deprecated/` archival tree, how to run `pytest` on Python 3.11+ |
 
 **GitHub Wiki (optional):** GitHub’s Wiki is a separate repository. If your project uses it, you can either:
 

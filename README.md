@@ -42,7 +42,7 @@ flowchart LR
   M --> U
 ```
 
-*Placeholder for a future architecture diagram file:* add your swimlane (API vs agent vs ERP) in `docs/wiki/` and link it here as the “official” network picture for releases.
+For the **maintained** layering diagram (HTTP client vs local UNSPSC catalog vs orchestration), see [docs/wiki/repository-layout.md](docs/wiki/repository-layout.md) — it is versioned with the repo and mirrors what CI tests against.
 
 ## The gap (and how we close it)
 

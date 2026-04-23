@@ -33,3 +33,7 @@
 - code: `neoxlink_sdk/open_source/contribution.py`
 - tooling: `scripts/validate_contribution.py`
 - templates: `.github/PULL_REQUEST_TEMPLATE.md`
+
+## Archived experiments (`deprecated/`)
+
+Older top-level `core/` Pydantic schemas and matching helpers that were **never wired** into `neoxlink_sdk` now live under [`deprecated/core/`](deprecated/core/). The shipping contract remains `neoxlink_sdk.models` and the open-source stack under `neoxlink_sdk/open_source/`.
