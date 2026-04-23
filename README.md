@@ -1,8 +1,8 @@
 # NEOXLINK-SDK
 
-<!-- mcp-name: io.github.neowalter/neoxlink-sdk -->
+<!-- mcp-name: io.github.neowalter/neoxlink -->
 
-[![PyPI version](https://img.shields.io/pypi/v/neoxlink-sdk.svg)](https://pypi.org/project/neoxlink-sdk/)
+[![PyPI version](https://img.shields.io/pypi/v/neoxlink.svg)](https://pypi.org/project/neoxlink/)
 [![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Model Context Protocol](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-6f42c1.svg)](https://modelcontextprotocol.io/)
@@ -80,7 +80,7 @@ Classic chat AI stops at paraphrasing needs. Enterprise procurement, trading, an
 **Install**
 
 ```bash
-pip install neoxlink-sdk
+pip install neoxlink
 # or, from this repo:
 pip install -e .
 ```
@@ -113,7 +113,7 @@ python examples/04_procurement_intent_engine.py
 **MCP (Model Context Protocol) stdio server**
 
 ```bash
-pip install 'neoxlink-sdk[mcp]'
+pip install 'neoxlink[mcp]'
 export NEOXLINK_API_KEY=your_key
 neoxlink-mcp
 ```

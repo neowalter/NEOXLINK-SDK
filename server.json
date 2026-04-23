@@ -1,0 +1,45 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.neowalter/neoxlink",
+  "title": "NEOXLINK MCP",
+  "description": "UNSPSC Standardization & B2B MCP: parse NL to taxonomy, confirm, resolve; optional local match.",
+  "version": "0.6.1",
+  "websiteUrl": "https://github.com/neowalter/NEOXLINK-SDK",
+  "repository": {
+    "url": "https://github.com/neowalter/NEOXLINK-SDK",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "neoxlink",
+      "version": "0.6.1",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "NEOXLINK_API_KEY",
+          "description": "Bearer token for the NeoXlink API (required for remote parse/confirm).",
+          "format": "string",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "NEOXLINK_BASE_URL",
+          "description": "API base URL; default is production if unset.",
+          "format": "string",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "NEOXLINK_ENABLE_MATCH",
+          "description": "Set to 1/true to register local neoxlink.match_intent.",
+          "format": "string",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}

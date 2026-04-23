@@ -1,0 +1,63 @@
+# Publish sdist/wheel to PyPI using PyPA's official action:
+# https://github.com/marketplace/actions/pypi-publish
+#
+# Setup:
+# 1. GitHub → Settings → Environments → create "pypi" (optional: protection rules).
+# 2. Add secret PYPI_API_TOKEN in that environment (or repo secrets): PyPI API token
+#    with upload scope for project "neoxlink". See https://pypi.org/manage/account/token/
+#
+# Alternative: remove `with.password` and set `permissions: id-token: write` on this job,
+# then configure PyPI Trusted Publishing for this repo + workflow (no long-lived token).
+#
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build distributions
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install build
+        run: python -m pip install --upgrade pip build
+      - name: Build sdist and wheel
+        run: python -m build
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+  publish:
+    name: Upload to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    if: >
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
+      github.event_name == 'workflow_dispatch'
+    environment:
+      name: pypi
+      url: https://pypi.org/project/neoxlink/
+    permissions:
+      actions: read
+    steps:
+      - name: Download distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}

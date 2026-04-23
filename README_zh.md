@@ -1,6 +1,6 @@
 # NEOXLINK-SDK
 
-[![PyPI version](https://img.shields.io/pypi/v/neoxlink-sdk.svg)](https://pypi.org/project/neoxlink-sdk/)
+[![PyPI version](https://img.shields.io/pypi/v/neoxlink.svg)](https://pypi.org/project/neoxlink/)
 [![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Model Context Protocol](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-6f42c1.svg)](https://modelcontextprotocol.io/)
@@ -51,7 +51,7 @@ English: [`README.md`](README.md) — 同仓中文手册与 MCP 说明见上列 
 **安装**
 
 ```bash
-pip install neoxlink-sdk
+pip install neoxlink
 # 或从本仓库：
 pip install -e .
 ```
@@ -84,7 +84,7 @@ python examples/04_procurement_intent_engine.py
 **MCP（Model Context Protocol）stdio 服务**
 
 ```bash
-pip install 'neoxlink-sdk[mcp]'
+pip install 'neoxlink[mcp]'
 export NEOXLINK_API_KEY=你的密钥
 neoxlink-mcp
 ```

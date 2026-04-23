@@ -34,7 +34,7 @@ def _import_mcp() -> Any:
         from mcp import types  # type: ignore[import-not-found]
     except ImportError as exc:  # pragma: no cover - env hint for operators
         raise RuntimeError(
-            "The MCP server requires the `mcp` package. Install with: pip install 'neoxlink-sdk[mcp]'"
+            "The MCP server requires the `mcp` package. Install with: pip install 'neoxlink[mcp]'"
         ) from exc
     return types, Server, stdio_server
 
@@ -43,7 +43,7 @@ def _pkg_version() -> str:
     try:
         from importlib.metadata import version
 
-        return version("neoxlink-sdk")
+        return version("neoxlink")
     except Exception:  # pragma: no cover
         return "0.6.0"
 
@@ -70,7 +70,7 @@ def _run_stdio(adapter: NeoxlinkMCPAdapter) -> None:
         "`unspsc://entry/{code}` resources for the packaged UNSPSC subset shipped with the SDK."
     )
     app = Server(
-        "neoxlink-sdk",
+        "neoxlink",
         version=_pkg_version(),
         instructions=instructions,
     )
@@ -100,7 +100,7 @@ def _run_stdio(adapter: NeoxlinkMCPAdapter) -> None:
                 title="Packaged UNSPSC subset (JSON)",
                 uri=AnyUrl("unspsc://catalog"),
                 description=(
-                    "Full UNSPSC keyword catalog bundled with neoxlink-sdk for Standardization, "
+                    "Full UNSPSC keyword catalog bundled with neoxlink for Standardization, "
                     "offline Agent Commerce demos, and deterministic taxonomy lookups (B2B)."
                 ),
                 mimeType="application/json",

@@ -14,8 +14,8 @@ if [[ -z "$API_BASE" && "$DRY" != "1" ]]; then
 fi
 
 PAYLOAD='{
-  "name": "neoxlink-sdk-mcp",
-  "version": "0.6.0",
+  "name": "neoxlink-mcp",
+  "version": "0.6.1",
   "summary": "UNSPSC-first structured intent + MCP tools (neoxlink.parse_preview, neoxlink.confirmed_submit).",
   "mcp": {
     "server_command": "neoxlink-mcp",

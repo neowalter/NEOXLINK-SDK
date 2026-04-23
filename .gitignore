@@ -13,6 +13,12 @@ dist/
 htmlcov/
 .DS_Store
 
+# Local secrets (never commit)
+pypi.env
+.env
+*.env
+!*.env.example
+
 # Local NEO-Growth / agent workflow automation (optional; not published; keep your copy outside clone if preferred)
 docs/neo_growth/
 scripts/neo_growth_ingest.py

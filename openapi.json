@@ -1,0 +1,359 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NeoXlink Public HTTP API",
+    "version": "0.6.1",
+    "description": "UNSPSC-aligned Standardization and B2B Agent Commerce HTTP surface consumed by the `neoxlink` distribution (`NeoXlinkClient`). Replace the server URL via `NEOXLINK_BASE_URL` in SDK and MCP host configuration. Keywords: Standardization, UNSPSC, B2B, Agent Commerce.",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "jsonSchemaDialect": "https://spec.openapis.org/oas/3.1/dialect/base",
+  "servers": [
+    {
+      "url": "https://neoxailink.com",
+      "description": "Default production base (override with environment `NEOXLINK_BASE_URL` for staging/self-hosted)."
+    }
+  ],
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/v1/entries": {
+      "post": {
+        "operationId": "submitEntry",
+        "summary": "Submit raw demand/supply text as an entry",
+        "tags": ["Entries"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": { "type": "string" },
+            "description": "Optional idempotency key for safe retries."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SubmitEntryRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Entry accepted",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "additionalProperties": true }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/entries/{raw_entry_id}": {
+      "get": {
+        "operationId": "getEntry",
+        "summary": "Fetch entry by id",
+        "tags": ["Entries"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "raw_entry_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entry payload",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "additionalProperties": true }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/search": {
+      "post": {
+        "operationId": "searchEntries",
+        "summary": "Semantic/search over indexed entries",
+        "tags": ["Search"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SearchRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ranked hits",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "additionalProperties": true }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/entries/parse": {
+      "post": {
+        "operationId": "parseEntry",
+        "summary": "Parse NL into structured preview (UNSPSC Standardization when available)",
+        "description": "Returns a confirmation token for `/v1/entries/confirm`. Aligns with MCP tool `neoxlink.parse_preview` / confirmed flows.",
+        "tags": ["Structured"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ParseEntryRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Parse preview + confirmation token",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ParseEntryResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/entries/confirm": {
+      "post": {
+        "operationId": "confirmEntry",
+        "summary": "Confirm parsed preview into a durable structured record",
+        "tags": ["Structured"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ConfirmEntryRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Confirmed entry",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ConfirmEntryResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/entries/resolve": {
+      "post": {
+        "operationId": "resolveEntry",
+        "summary": "Resolve a confirmed entry (answers or handoff metadata)",
+        "tags": ["Structured"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ResolveEntryRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resolve outcome",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ResolveResult" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "Use `Authorization: Bearer <NEOXLINK_API_KEY>` as implemented by `NeoXlinkClient`."
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Missing or invalid bearer token."
+      }
+    },
+    "schemas": {
+      "EntryKind": {
+        "type": "string",
+        "enum": ["demand", "supply"]
+      },
+      "SubmitEntryRequest": {
+        "type": "object",
+        "required": ["raw_text"],
+        "properties": {
+          "raw_text": { "type": "string", "minLength": 1 },
+          "entry_kind": { "$ref": "#/components/schemas/EntryKind" },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "default": {}
+          }
+        },
+        "additionalProperties": true
+      },
+      "SearchRequest": {
+        "type": "object",
+        "required": ["query"],
+        "properties": {
+          "query": { "type": "string" },
+          "filters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "default": {}
+          },
+          "entry_kind": { "$ref": "#/components/schemas/EntryKind" },
+          "top_k": { "type": "integer", "minimum": 1, "default": 20 }
+        },
+        "additionalProperties": true
+      },
+      "ParseEntryRequest": {
+        "type": "object",
+        "required": ["entry_kind", "raw_text"],
+        "properties": {
+          "entry_kind": { "$ref": "#/components/schemas/EntryKind" },
+          "raw_text": { "type": "string", "minLength": 1 },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "May include nested `billing.use_own_model` for BYO-model routing."
+          }
+        },
+        "additionalProperties": true
+      },
+      "UNSPSCClassification": {
+        "type": "object",
+        "required": ["code", "name", "confidence"],
+        "properties": {
+          "code": { "type": "string", "pattern": "^\\d{8}$" },
+          "name": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "source": {
+            "type": "string",
+            "enum": ["sdk_heuristic", "backend", "manual_override"],
+            "default": "sdk_heuristic"
+          }
+        }
+      },
+      "ParsedPreview": {
+        "type": "object",
+        "required": [
+          "intent",
+          "entry_kind",
+          "category",
+          "summary",
+          "confidence",
+          "schema_version"
+        ],
+        "properties": {
+          "intent": { "type": "string" },
+          "entry_kind": { "$ref": "#/components/schemas/EntryKind" },
+          "category": { "type": "string" },
+          "entities": {
+            "type": "array",
+            "items": { "type": "object", "additionalProperties": true }
+          },
+          "constraints": { "type": "object", "additionalProperties": true },
+          "keywords": { "type": "array", "items": { "type": "string" } },
+          "summary": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "quality_flags": { "type": "object", "additionalProperties": true },
+          "missing_fields": { "type": "array", "items": { "type": "string" } },
+          "unspsc": { "anyOf": [{ "$ref": "#/components/schemas/UNSPSCClassification" }, { "type": "null" }] },
+          "schema_version": { "type": "string", "const": "v2" }
+        },
+        "additionalProperties": true
+      },
+      "ParseEntryResponse": {
+        "type": "object",
+        "required": ["confirmation_token", "preview"],
+        "properties": {
+          "confirmation_token": { "type": "string" },
+          "preview": { "$ref": "#/components/schemas/ParsedPreview" },
+          "parser_version": { "type": "string" }
+        },
+        "additionalProperties": true
+      },
+      "ConfirmEntryRequest": {
+        "type": "object",
+        "required": ["confirmation_token"],
+        "properties": {
+          "confirmation_token": { "type": "string" },
+          "overrides": { "type": "object", "additionalProperties": true, "default": {} }
+        },
+        "additionalProperties": true
+      },
+      "ConfirmEntryResponse": {
+        "type": "object",
+        "required": ["raw_entry_id"],
+        "properties": {
+          "raw_entry_id": { "type": "string" },
+          "entry_kind": { "$ref": "#/components/schemas/EntryKind" },
+          "status": { "type": "string" },
+          "structured_data": {
+            "anyOf": [{ "$ref": "#/components/schemas/ParsedPreview" }, { "type": "object" }, { "type": "null" }]
+          }
+        },
+        "additionalProperties": true
+      },
+      "ResolveEntryRequest": {
+        "type": "object",
+        "required": ["raw_entry_id"],
+        "properties": {
+          "raw_entry_id": { "type": "string" }
+        },
+        "additionalProperties": true
+      },
+      "ResolveResult": {
+        "type": "object",
+        "required": ["path"],
+        "properties": {
+          "path": { "type": "string" },
+          "reason": { "type": ["string", "null"] },
+          "answer": { "type": ["string", "null"] },
+          "suggested_query": { "type": ["string", "null"] },
+          "related_results": {
+            "type": "array",
+            "items": { "type": "object", "additionalProperties": true }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-# Contributing to neoxlink-sdk
+# Contributing to neoxlink
 
 Thanks for contributing.
 
@@ -33,6 +33,21 @@ pip install -e .
 ```
 
 4. Run examples and compile checks before opening PR.
+
+## Releasing to PyPI (GitHub Actions)
+
+Releases use [pypa/gh-action-pypi-publish](https://github.com/marketplace/actions/pypi-publish) in `.github/workflows/publish-pypi.yml`: a **build** job produces `dist/`, then a **publish** job uploads to project [`neoxlink`](https://pypi.org/project/neoxlink/) using the **`PYPI_API_TOKEN`** secret.
+
+**One-time setup**
+
+1. GitHub → **Settings → Environments** → create **`pypi`** (optional: required reviewers, deployment branches).
+2. Under that environment (or **Settings → Secrets and variables → Actions** at repo level), add **`PYPI_API_TOKEN`**: a [PyPI API token](https://pypi.org/manage/account/token/) with upload permission for **`neoxlink`**.
+3. Optional later: switch to **Trusted Publishing** (OIDC) on PyPI for this repo + `publish-pypi.yml`, then remove the `with: password:` block from the workflow and grant the publish job `id-token: write` per the [action docs](https://github.com/marketplace/actions/pypi-publish).
+
+**Cut a release**
+
+1. Bump `version` in `pyproject.toml` and in `server.json` if you publish to the MCP Registry too.
+2. Push a tag: `git tag vX.Y.Z && git push origin vX.Y.Z`, or run **Actions → Publish to PyPI → Run workflow**.
 
 ## Pull request guidelines
 

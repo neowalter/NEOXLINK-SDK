@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "neoxlink": {
+      "command": "neoxlink-mcp",
+      "args": [],
+      "env": {
+        "NEOXLINK_API_KEY": "",
+        "NEOXLINK_BASE_URL": "https://neoxailink.com",
+        "NEOXLINK_ENABLE_MATCH": "0"
+      }
+    }
+  }
+}

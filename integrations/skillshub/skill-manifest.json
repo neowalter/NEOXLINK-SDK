@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0",
+  "skill_id": "com.neoxlink.unspsc.agent-commerce",
+  "name": "NEOXLINK SDK — UNSPSC Standardization & Agent Commerce",
+  "version": "0.6.1",
+  "license": "MIT",
+  "summary": "UNSPSC-first Standardization for B2B: MCP tools and HTTP APIs that bridge chat to executable procurement records (Agent Commerce).",
+  "keywords": [
+    "Standardization",
+    "UNSPSC",
+    "B2B",
+    "Agent Commerce",
+    "MCP",
+    "Model Context Protocol",
+    "procurement",
+    "taxonomy",
+    "intent parsing",
+    "supply chain"
+  ],
+  "documentation_urls": {
+    "readme": "https://github.com/neowalter/NEOXLINK-SDK/blob/main/README.md",
+    "mcp": "https://github.com/neowalter/NEOXLINK-SDK/blob/main/docs/wiki/mcp-integration.md",
+    "unspsc_ref": "https://github.com/neowalter/NEOXLINK-SDK/blob/main/docs/wiki/unspsc-quick-ref.md",
+    "openapi": "https://github.com/neowalter/NEOXLINK-SDK/blob/main/openapi.json"
+  },
+  "runtime": {
+    "type": "mcp_stdio",
+    "python": ">=3.11",
+    "pip_spec": "neoxlink[mcp]==0.6.1",
+    "entry_command": "neoxlink-mcp",
+    "mcp_config_template_path": "mcp-config.json"
+  },
+  "tools": [
+    {
+      "name": "neoxlink.parse_preview",
+      "role": "parse_intent",
+      "summary": "NL → structured preview with UNSPSC Standardization; no auto-confirm (B2B / Agent Commerce)."
+    },
+    {
+      "name": "neoxlink.confirmed_submit",
+      "role": "commit_structured_record",
+      "summary": "Parse + confirm (+ optional resolve) for durable Agent Commerce artifacts."
+    },
+    {
+      "name": "neoxlink.match_intent",
+      "role": "match_supply",
+      "summary": "Optional local ranked match when NEOXLINK_ENABLE_MATCH=1 (offline Standardization demos)."
+    }
+  ],
+  "resources": [
+    {
+      "uri": "unspsc://catalog",
+      "mime_type": "application/json",
+      "summary": "Packaged UNSPSC subset bundled with the SDK for taxonomy lookup."
+    },
+    {
+      "uri_template": "unspsc://entry/{code}",
+      "mime_type": "application/json",
+      "summary": "Single 8-digit UNSPSC record from the packaged subset."
+    }
+  ],
+  "host_environment": {
+    "required": {
+      "NEOXLINK_API_KEY": {
+        "description": "Bearer token for https://neoxailink.com (set via host secret store; never commit).",
+        "sensitive": true
+      }
+    },
+    "optional": {
+      "NEOXLINK_BASE_URL": {
+        "default": "https://neoxailink.com",
+        "description": "API base URL for self-hosted or staging stacks."
+      },
+      "NEOXLINK_ENABLE_MATCH": {
+        "default": "0",
+        "description": "Set to 1 to expose neoxlink.match_intent on the MCP server."
+      }
+    }
+  },
+  "api_binding": {
+    "style": "openapi31",
+    "spec_relpath": "../../openapi.json",
+    "default_server_env": "NEOXLINK_BASE_URL"
+  },
+  "store_listing": {
+    "tagline_zh": "把模糊需求变成可执行的 UNSPSC 标准商业语义，打通对话到交易。",
+    "tagline_en": "Turn fuzzy chat into UNSPSC-standardized B2B intent—Agent Commerce from talk to transaction.",
+    "short_description_zh_max_100": "面向 B2B 与 Agent Commerce 的 UNSPSC Standardization 工具：解析非标需求、对齐全球商品服务代码，并可通过 MCP 供 Claude/Cursor 调用。",
+    "pain_point_zh": "模型“听懂了”却落不了地：缺少标准编码与结构化确认，ERP/采购系统无法执行；本技能将对话桥接到可确认、可解析、可匹配的交易记录。",
+    "example_prompts": [
+      "用 UNSPSC Standardization 解析这条英文采购需求并给出结构化预览，不要自动确认：我们需要 500 个可回收瓦楞纸箱，两周内送达上海。",
+      "调用 neoxlink.confirmed_submit 提交一条 sell-side supply：我们提供企业级 Kubernetes 托管与 7x24 运维，标注为 supply。",
+      "读取 unspsc://catalog 资源，列出打包进 SDK 的 UNSPSC 代码，并说明哪个最贴近“软件定制开发”。"
+    ]
+  },
+  "skillshub_publish": {
+    "notes": "skillshub.ai 的 REST 形态以厂商最新 OpenAPI 为准；deploy_to_skillshub.py 使用环境变量映射端点。",
+    "default_upload_path": "/v1/skills",
+    "method": "POST",
+    "auth_header": "Authorization: Bearer <value of env SKILLSHUB_API_TOKEN>"
+  }
+}

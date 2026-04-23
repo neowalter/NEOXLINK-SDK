@@ -8,7 +8,7 @@ If you use the GitHub Wiki for end-user documentation, you can add pages from th
 
 # NEOXLINK-SDK
 
-Python SDK: natural language → **UNSPSC**-aligned structured business intent, with **MCP** stdio server and Skill runtime. Core API: `NeoXlinkClient`, `StructuredSubmissionPipeline`, `NeoxlinkSkill`, `NeoxlinkMCPAdapter`. Install: `pip install neoxlink-sdk`. MCP: `pip install 'neoxlink-sdk[mcp]'` then `neoxlink-mcp` with `NEOXLINK_API_KEY` set. See the repository [README](https://github.com/OWNER/REPO#readme) for the full table of modules and examples.
+Python SDK: natural language → **UNSPSC**-aligned structured business intent, with **MCP** stdio server and Skill runtime. Core API: `NeoXlinkClient`, `StructuredSubmissionPipeline`, `NeoxlinkSkill`, `NeoxlinkMCPAdapter`. Install: `pip install neoxlink`. MCP: `pip install 'neoxlink[mcp]'` then `neoxlink-mcp` with `NEOXLINK_API_KEY` set. See the repository [README](https://github.com/OWNER/REPO#readme) for the full table of modules and examples.
 
 ---
 
@@ -16,7 +16,7 @@ Python SDK: natural language → **UNSPSC**-aligned structured business intent, 
 
 # MCP integration
 
-- Install: `pip install 'neoxlink-sdk[mcp]'`
+- Install: `pip install 'neoxlink[mcp]'`
 - Run: `export NEOXLINK_API_KEY=...` then `neoxlink-mcp` (stdio).
 - Optional: `NEOXLINK_ENABLE_MATCH=1` to register `neoxlink.match_intent` (in-memory default has no preloaded partners; use a custom `ProcurementIntentEngine` in your own deployment for production data).
 - Config template: `mcp/config.neoxlink.example.json` in the repo; merge the `neoxlink` block into your host’s MCP JSON.
