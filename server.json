@@ -3,7 +3,7 @@
   "name": "io.github.neowalter/neoxlink",
   "title": "NEOXLINK MCP",
   "description": "UNSPSC Standardization & B2B MCP: parse NL to taxonomy, confirm, resolve; optional local match.",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "websiteUrl": "https://github.com/neowalter/NEOXLINK-SDK",
   "repository": {
     "url": "https://github.com/neowalter/NEOXLINK-SDK",
@@ -13,7 +13,7 @@
     {
       "registryType": "pypi",
       "identifier": "neoxlink",
-      "version": "0.6.1",
+      "version": "0.6.2",
       "transport": {
         "type": "stdio"
       },

@@ -22,7 +22,7 @@
     "python": ">=3.11"
   },
   "requirements": [
-    "pip install 'neoxlink[mcp]==0.6.1'",
+    "pip install 'neoxlink[mcp]==0.6.2'",
     "NEOXLINK_API_KEY in MCP host environment"
   ],
   "configuration": {

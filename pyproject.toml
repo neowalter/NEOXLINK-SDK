@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "neoxlink"
-version = "0.6.1"
+version = "0.6.2"
 description = "Open-source SDK for LLM-first intent parsing, taxonomy mapping, extraction, and public-data matching pipelines"
 readme = "README.md"
 requires-python = ">=3.11"

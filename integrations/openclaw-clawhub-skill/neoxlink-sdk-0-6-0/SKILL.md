@@ -17,7 +17,7 @@ metadata:
     homepage: https://github.com/neowalter/NEOXLINK-SDK
     install:
       - kind: uv
-        package: "neoxlink[mcp]==0.6.1"
+        package: "neoxlink[mcp]==0.6.2"
         bins:
           - neoxlink-mcp
 ---
@@ -29,8 +29,8 @@ Teach the agent to use **NEOXLINK** for **UNSPSC-aligned** structured previews a
 ## Install
 
 ```bash
-pip install 'neoxlink[mcp]==0.6.1'
-# or: uv pip install 'neoxlink[mcp]==0.6.1'
+pip install 'neoxlink[mcp]==0.6.2'
+# or: uv pip install 'neoxlink[mcp]==0.6.2'
 ```
 
 Host env (set in MCP host / secret store; never commit):
