@@ -36,7 +36,7 @@ pip install -e .
 
 ## Releasing to PyPI (GitHub Actions)
 
-Releases use [pypa/gh-action-pypi-publish](https://github.com/marketplace/actions/pypi-publish) in `.github/workflows/publish-pypi.yml`: a **build** job produces `dist/`, then a **publish** job uploads to project [`neoxlink`](https://pypi.org/project/neoxlink/) using the **`PYPI_API_TOKEN`** secret.
+Releases use [pypa/gh-action-pypi-publish](https://github.com/marketplace/actions/pypi-publish) in `.github/workflows/publish-pypi.yml`: a **build** job produces `dist/`, then a **publish** job uploads to project [`neoxlink`](https://pypi.org/project/neoxlink/) using the **`PYPI_API_TOKEN`** secret. The workflow sets **`attestations: false`** so PyPI upload uses the token only (no OIDC); without that, the action can fail with missing `id-token: write` / OIDC errors.
 
 **One-time setup**
 
