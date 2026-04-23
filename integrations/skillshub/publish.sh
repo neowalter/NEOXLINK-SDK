@@ -15,7 +15,7 @@ fi
 
 PAYLOAD='{
   "name": "neoxlink-mcp",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "summary": "UNSPSC-first structured intent + MCP tools (neoxlink.parse_preview, neoxlink.confirmed_submit).",
   "mcp": {
     "server_command": "neoxlink-mcp",

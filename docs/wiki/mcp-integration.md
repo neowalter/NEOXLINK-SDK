@@ -25,6 +25,12 @@ The Registry is in **preview**; expect possible breaking changes ([registry issu
 pip install 'neoxlink[mcp]'
 ```
 
+**uvx (2026-style, no venv):** after [uv](https://docs.astral.sh/uv/) is installed:
+
+```bash
+uvx --from 'neoxlink[mcp]' neoxlink-mcp
+```
+
 The optional `mcp` extra pins the **`mcp`** and **`anyio`** libraries required for the stdio server; see `pyproject.toml` (`[project.optional-dependencies] mcp`).
 
 ## stdio server (`neoxlink-mcp`)

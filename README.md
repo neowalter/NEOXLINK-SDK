@@ -8,6 +8,7 @@
 [![Model Context Protocol](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-6f42c1.svg)](https://modelcontextprotocol.io/)
 [![UNSPSC handbook](https://img.shields.io/badge/docs-UNSPSC%20quick%20ref-blue.svg)](docs/wiki/unspsc-quick-ref.md)
 [![MCP integration](https://img.shields.io/badge/docs-MCP%20integration-6f42c1.svg)](docs/wiki/mcp-integration.md)
+[![Agent channels](https://img.shields.io/badge/docs-Agent%20channels-2ea043.svg)](docs/wiki/agent-channel-matrix.md)
 [![Repository layout](https://img.shields.io/badge/docs-Repository%20layout-1f6feb.svg)](docs/wiki/repository-layout.md)
 
 **Bridging the gap between Chat and Transaction** — turn fuzzy natural language into **Standardized Business Intelligence** and executable procurement workflows.
@@ -120,6 +121,30 @@ neoxlink-mcp
 
 Point your MCP host (Claude Desktop, Cursor, etc.) at the `neoxlink-mcp` command, or use the config template in [`mcp/config.neoxlink.example.json`](mcp/config.neoxlink.example.json). Optional: `NEOXLINK_ENABLE_MATCH=1` to expose `neoxlink.match_intent` (local matching pipeline; supply your own data source in custom deployments).
 
+## Agent quick connect (MCP & Skills)
+
+**One capability unit, three lines — install, run, verify**
+
+```bash
+export NEOXLINK_API_KEY="your_key"
+uvx --from 'neoxlink[mcp]' neoxlink-mcp
+# In Cursor / Claude Code / Claude Desktop: register this process as an MCP server (stdio), then list tools.
+```
+
+Equivalent with pip: `pip install 'neoxlink[mcp]' && neoxlink-mcp`. Use [`mcp-config.json`](mcp-config.json) or [`mcp/config.neoxlink.example.json`](mcp/config.neoxlink.example.json) as host templates. Debug any MCP server with `npx -y @modelcontextprotocol/inspector` when using HTTP transport; **this** package speaks **stdio** by default.
+
+**Channels**
+
+| Surface | How agents load NEOXLINK |
+| --- | --- |
+| **MCP (local)** | Stdio command `neoxlink-mcp` after `pip install 'neoxlink[mcp]'` or `uvx --from 'neoxlink[mcp]' neoxlink-mcp`. |
+| **MCP (registry)** | Optional MCP Registry publish via `server.json` + `mcp-publisher` — see [docs/wiki/mcp-integration.md](docs/wiki/mcp-integration.md). |
+| **OpenClaw / ClawHub** | AgentSkills folder with `SKILL.md` + install via `openclaw skills install` / `clawhub`; point instructions at the same MCP tools. Example assets: [`integrations/openclaw-clawhub-skill/`](integrations/openclaw-clawhub-skill/). |
+| **Hermes** | Configure NEOXLINK as an MCP server in Hermes so `discover_mcp_tools()` exposes `neoxlink.*`; for native plugins use a separate Hermes plugin package with `hermes_agent.plugins` entry points. |
+| **Skillshub-style catalogs** | Ship [`integrations/skillshub/skill-manifest.json`](integrations/skillshub/skill-manifest.json) to registries that ingest JSON manifests; runtime still launches `neoxlink-mcp`. |
+
+**Full channel matrix, copy-paste checklists, and 2026 protocol notes:** [docs/wiki/agent-channel-matrix.md](docs/wiki/agent-channel-matrix.md).
+
 ## Use cases
 
 - **Global procurement & sourcing** — standardize requisitions and supplier catalogs across regions using **UNSPSC**.  
@@ -128,7 +153,7 @@ Point your MCP host (Claude Desktop, Cursor, etc.) at the `neoxlink-mcp` command
 - **Agent products** — ship **MCP** tools or **Skill** contracts without reinventing procurement ontology.  
 - **Supply-Demand Matching** — rank partners with transparent scoring on top of normalized intent.
 
-## Architecture highlights (v0.6)
+## Architecture highlights (v0.6.3)
 
 | Module | Role |
 | --- | --- |

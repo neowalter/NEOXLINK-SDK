@@ -5,7 +5,7 @@ description: >-
   (neoxlink.parse_preview, neoxlink.confirmed_submit). Use when normalizing
   procurement or supply text to structured records, UNSPSC codes, or MCP-backed
   submit flows.
-version: 0.6.0
+version: 0.6.3
 metadata:
   openclaw:
     requires:
@@ -17,7 +17,7 @@ metadata:
     homepage: https://github.com/neowalter/NEOXLINK-SDK
     install:
       - kind: uv
-        package: "neoxlink[mcp]==0.6.2"
+        package: "neoxlink[mcp]==0.6.3"
         bins:
           - neoxlink-mcp
 ---
@@ -29,8 +29,8 @@ Teach the agent to use **NEOXLINK** for **UNSPSC-aligned** structured previews a
 ## Install
 
 ```bash
-pip install 'neoxlink[mcp]==0.6.2'
-# or: uv pip install 'neoxlink[mcp]==0.6.2'
+pip install 'neoxlink[mcp]==0.6.3'
+# or: uv pip install 'neoxlink[mcp]==0.6.3'
 ```
 
 Host env (set in MCP host / secret store; never commit):

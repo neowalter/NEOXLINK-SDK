@@ -45,7 +45,7 @@ def _pkg_version() -> str:
 
         return version("neoxlink")
     except Exception:  # pragma: no cover
-        return "0.6.0"
+        return "0.6.3"
 
 
 def build_adapter() -> NeoxlinkMCPAdapter:

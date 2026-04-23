@@ -23,3 +23,6 @@ pypi.env
 docs/neo_growth/
 scripts/neo_growth_ingest.py
 scripts/neo_growth_status.sh
+
+# Local-only overlays for agent interoperability docs (canonical: docs/wiki/agent-channel-matrix.md)
+docs/wiki/agent-channel-matrix.local.md

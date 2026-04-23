@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "skill_id": "com.neoxlink.unspsc.agent-commerce",
   "name": "NEOXLINK SDK — UNSPSC Standardization & Agent Commerce",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "license": "MIT",
   "summary": "UNSPSC-first Standardization for B2B: MCP tools and HTTP APIs that bridge chat to executable procurement records (Agent Commerce).",
   "keywords": [
@@ -26,7 +26,7 @@
   "runtime": {
     "type": "mcp_stdio",
     "python": ">=3.11",
-    "pip_spec": "neoxlink[mcp]==0.6.2",
+    "pip_spec": "neoxlink[mcp]==0.6.3",
     "entry_command": "neoxlink-mcp",
     "mcp_config_template_path": "mcp-config.json"
   },

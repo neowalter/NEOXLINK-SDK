@@ -6,6 +6,7 @@
 [![Model Context Protocol](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-6f42c1.svg)](https://modelcontextprotocol.io/)
 [![UNSPSC 手册](https://img.shields.io/badge/docs-UNSPSC%20快速查阅-blue.svg)](docs/wiki/unspsc-quick-ref.md)
 [![MCP 集成](https://img.shields.io/badge/docs-MCP%20集成-6f42c1.svg)](docs/wiki/mcp-integration.md)
+[![Agent 全渠道](https://img.shields.io/badge/docs-Agent%20全渠道-2ea043.svg)](docs/wiki/agent-channel-matrix.md)
 
 **打通「对话」与「交易」之间的最后一公里** —— 将模糊自然语言变为 **标准化商业智能（Standardized Business Intelligence）** 与可执行的结构化业务流程。
 
@@ -91,6 +92,30 @@ neoxlink-mcp
 
 在 Claude Desktop、Cursor 等宿主中把 MCP 服务指向 `neoxlink-mcp` 命令，或参考配置模板 [`mcp/config.neoxlink.example.json`](mcp/config.neoxlink.example.json)。可选：设置 `NEOXLINK_ENABLE_MATCH=1` 以暴露 `neoxlink.match_intent`（本地匹配管线；自托管时接入自有数据源）。
 
+## Agent 快速接入（MCP & Skill）
+
+**三行指令：安装并启动 MCP（推荐 uvx，无虚拟环境）**
+
+```bash
+export NEOXLINK_API_KEY="你的密钥"
+uvx --from 'neoxlink[mcp]' neoxlink-mcp
+# 在 Cursor / Claude Code / Claude Desktop 中将上述进程注册为 MCP（stdio），随后在宿主内「列出工具」应看到 neoxlink.parse_preview、neoxlink.confirmed_submit。
+```
+
+若已习惯 pip：`pip install 'neoxlink[mcp]' && neoxlink-mcp`。宿主侧配置可复制根目录 [`mcp-config.json`](mcp-config.json) 或 [`mcp/config.neoxlink.example.json`](mcp/config.neoxlink.example.json)。需调试 MCP 时可使用 `npx -y @modelcontextprotocol/inspector`（常用于 HTTP 形态）；**本包默认 stdio**，以宿主 MCP 配置为准。
+
+**全渠道一览（协议级发现优先，避免手工 Webhook）**
+
+| 渠道 | 加载方式 |
+| --- | --- |
+| **本地 MCP** | `neoxlink-mcp`（`pip` / `uvx` 均可） |
+| **MCP Registry（预览）** | `server.json` + `mcp-publisher`；详见 [mcp-integration.md](docs/wiki/mcp-integration.md) |
+| **OpenClaw / ClawHub** | `SKILL.md`（AgentSkills）+ `openclaw skills install` / `clawhub`；示例见 [`integrations/openclaw-clawhub-skill/`](integrations/openclaw-clawhub-skill/) |
+| **Hermes** | 在 Hermes 配置 MCP 服务以走 `discover_mcp_tools()`；原生扩展用独立插件包的 `hermes_agent.plugins` 入口 |
+| **Skillshub 类目录** | 提交清单 [`integrations/skillshub/skill-manifest.json`](integrations/skillshub/skill-manifest.json)；运行态仍启动 `neoxlink-mcp` |
+
+**结构化矩阵、核心清单与模板：** [docs/wiki/agent-channel-matrix.md](docs/wiki/agent-channel-matrix.md)。
+
 ## 应用场景
 
 - **全球采购与寻源** — 以 **UNSPSC** 统一多地区请购与供应商目录。  
@@ -99,7 +124,7 @@ neoxlink-mcp
 - **Agent 产品** — 通过 **MCP** 或 **Skill** 合约交付能力，无需自研采购本体。  
 - **Supply-Demand Matching** — 在归一意图之上做可解释排序与伙伴推荐。
 
-## 架构要点（v0.6）
+## 架构要点（v0.6.3）
 
 | 模块 | 职责 |
 | --- | --- |

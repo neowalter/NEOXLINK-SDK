@@ -1,0 +1,48 @@
+{
+  "$schema_comment": "Example registry-style manifest for OpenClaw/ClawHub-adjacent listings. OpenClaw runtime loads AgentSkills folders (SKILL.md); this JSON is for catalogs, CI, or publisher APIs.",
+  "name": "neoxlink",
+  "version": "0.6.3",
+  "display_name": "NEOXLINK — UNSPSC & Agent Commerce (MCP)",
+  "description": "Structured B2B intent via UNSPSC: MCP tools neoxlink.parse_preview, neoxlink.confirmed_submit; optional neoxlink.match_intent when NEOXLINK_ENABLE_MATCH=1.",
+  "license": "MIT",
+  "repository": "https://github.com/neowalter/NEOXLINK-SDK",
+  "documentation": "https://github.com/neowalter/NEOXLINK-SDK/blob/main/docs/wiki/mcp-integration.md",
+  "tags": [
+    "openclaw",
+    "clawhub",
+    "mcp",
+    "unspsc",
+    "procurement",
+    "agent-commerce",
+    "b2b"
+  ],
+  "agentskills": {
+    "skill_md_path": "neoxlink-sdk-0-6-0/SKILL.md",
+    "notes": "Vendor or publish the sibling SKILL.md; keep frontmatter name/description in sync with this manifest."
+  },
+  "runtime": {
+    "language": "python",
+    "requires_python": ">=3.11",
+    "pip_install": "pip install 'neoxlink[mcp]==0.6.3'",
+    "mcp_stdio_command": "neoxlink-mcp",
+    "mcp_config_template": "neoxlink-sdk-0-6-0/mcp-config.json"
+  },
+  "environment": {
+    "required": ["NEOXLINK_API_KEY"],
+    "optional": ["NEOXLINK_BASE_URL", "NEOXLINK_ENABLE_MATCH"]
+  },
+  "tools": [
+    {
+      "name": "neoxlink.parse_preview",
+      "summary": "NL → structured preview with UNSPSC when applicable; no auto-confirm."
+    },
+    {
+      "name": "neoxlink.confirmed_submit",
+      "summary": "Parse + confirm (+ optional resolve) for durable structured records."
+    },
+    {
+      "name": "neoxlink.match_intent",
+      "summary": "Optional local match when engine enabled via NEOXLINK_ENABLE_MATCH=1."
+    }
+  ]
+}
