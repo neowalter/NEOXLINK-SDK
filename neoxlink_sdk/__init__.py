@@ -1,4 +1,5 @@
-from . import open_source
+import importlib
+
 from .async_client import AsyncNeoXlinkClient
 from .async_pipeline import AsyncStructuredSubmissionPipeline
 from .chains import NeoxlinkSubmissionChain, SubmissionChainInput
@@ -37,6 +38,17 @@ from .pipeline import StructuredSubmissionPipeline
 from .plugins import PluginRegistry, RankingStrategy
 from .skill import NeoxlinkSkill
 from .unspsc import classify_unspsc, unspsc_candidates
+
+
+def __getattr__(name: str):
+    if name == "open_source":
+        return importlib.import_module(".open_source", __name__)
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def __dir__() -> list[str]:
+    return sorted({*globals().keys(), "open_source"})
+
 
 __all__ = [
     "ClarificationQuestion",

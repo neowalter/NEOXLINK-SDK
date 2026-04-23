@@ -1,8 +1,14 @@
 # In-repo documentation (wiki mirror)
 
-**Source of truth:** The canonical copy of UNSPSC and MCP handbooks for NEOXLINK-SDK lives in this `docs/wiki/` tree in the main repository so they are versioned with the code, reviewable in PRs, and linkable from `README.md`.
+**Source of truth:** The canonical copy of UNSPSC, MCP, and **repository layout** handbooks for NEOXLINK-SDK lives in this `docs/wiki/` tree in the main repository so they are versioned with the code, reviewable in PRs, and linkable from `README.md`.
+
+| Page | Content |
+| --- | --- |
+| [`unspsc-quick-ref.md`](unspsc-quick-ref.md) | UNSPSC usage / quick reference |
+| [`mcp-integration.md`](mcp-integration.md) | MCP stdio server and tool surface |
+| [`repository-layout.md`](repository-layout.md) | Top-level tree, HTTP vs catalog layers, how to run `pytest` on Python 3.11+ |
 
 **GitHub Wiki (optional):** GitHub’s Wiki is a separate repository. If your project uses it, you can either:
 
 - **Mirror** — periodically copy or sync these files into the Wiki (manual paste, a small script, or `gh` CLI with maintainer access), or  
-- **Link only** — keep Wiki minimal and point readers to [`docs/wiki/unspsc-quick-ref.md`](unspsc-quick-ref.md) and [`docs/wiki/mcp-integration.md`](mcp-integration.md) on the default branch (recommended for a single source of truth).
+- **Link only** — keep Wiki minimal and point readers to the files above on the default branch (recommended for a single source of truth).

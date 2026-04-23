@@ -1,11 +1,14 @@
 # NEOXLINK-SDK
 
+<!-- mcp-name: io.github.neowalter/neoxlink-sdk -->
+
 [![PyPI version](https://img.shields.io/pypi/v/neoxlink-sdk.svg)](https://pypi.org/project/neoxlink-sdk/)
 [![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Model Context Protocol](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-6f42c1.svg)](https://modelcontextprotocol.io/)
 [![UNSPSC handbook](https://img.shields.io/badge/docs-UNSPSC%20quick%20ref-blue.svg)](docs/wiki/unspsc-quick-ref.md)
 [![MCP integration](https://img.shields.io/badge/docs-MCP%20integration-6f42c1.svg)](docs/wiki/mcp-integration.md)
+[![Repository layout](https://img.shields.io/badge/docs-Repository%20layout-1f6feb.svg)](docs/wiki/repository-layout.md)
 
 **Bridging the gap between Chat and Transaction** — turn fuzzy natural language into **Standardized Business Intelligence** and executable procurement workflows.
 
@@ -137,6 +140,8 @@ Point your MCP host (Claude Desktop, Cursor, etc.) at the `neoxlink-mcp` command
 | `neoxlink_sdk.credits` | Credit / BYOM metering for metered clients. |
 | `neoxlink_sdk.plugins.PluginRegistry` | Register model adapters, data sources, ranking strategies. |
 
+The **in-repo** wiki also documents [on-disk layout, HTTP vs UNSPSC layers, and running tests (Python 3.11+)](docs/wiki/repository-layout.md). Open-source “module one–eight” design remains in [REPOSITORY_ARCHITECTURE.md](REPOSITORY_ARCHITECTURE.md).
+
 **Open-source community layout**
 
 1. [Templates](community/01_templates.md)  
@@ -172,6 +177,16 @@ Optional extras for model examples:
 
 ```bash
 pip install -e ".[model_examples]"
+```
+
+## Local development
+
+This package targets **Python 3.11+** (`requires-python` in `pyproject.toml`). Run the test suite with a 3.11+ interpreter (system `python3` on some macOS installs is 3.9 and will not load the type annotations used in the code):
+
+```bash
+python3.11 -m venv .venv
+.venv/bin/pip install -e ".[dev]"
+.venv/bin/python -m pytest
 ```
 
 ## Community
