@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from .catalog import (
     ALL_LONG_KEYWORDS_DISTINCT,
-    CATALOG as UNSPSC_CATALOG,
     ENTRY_KEYWORD_FROZENSETS,
     ENTRY_LONG_KEYWORDS,
     KEYWORD_IDF,
     UNSPSCEntry,
+)
+from .catalog import (
+    CATALOG as UNSPSC_CATALOG,
 )
 from .tokenize import matching_token_set
 
