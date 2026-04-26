@@ -26,4 +26,4 @@
 
 ## Further reading
 
-- [UNSPSC official site](https://www.unspsc.org/) (taxonomy ownership and updates).
+- [UNSPSC official site](https://www.ungm.org/public/unspsc) (taxonomy ownership and updates).
