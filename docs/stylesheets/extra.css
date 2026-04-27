@@ -467,9 +467,13 @@ ol.nx-steps > li:last-child {
   color: #6b7280;
 }
 
-/* Slightly narrow measure for long-form doc pages (Material grid still applies) */
+/* Slightly narrow measure for long-form doc pages; full width for API (mkdocstrings) */
 .md-content .md-typeset {
   max-width: 50rem;
+}
+
+.md-content .md-typeset:has(.doc) {
+  max-width: none;
 }
 
 /* Emoji inline twemoji */
