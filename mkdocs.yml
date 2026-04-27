@@ -1,8 +1,47 @@
 site_name: NEOXLINK SDK
 site_url: https://neowalter.github.io/NEOXLINK-SDK/
+site_description: Natural language → structured intent — UNSPSC, MCP, typed outputs for agents and backends.
 repo_url: https://github.com/neowalter/NEOXLINK-SDK
+edit_uri: edit/main/docs/
+repo_name: neowalter/NEOXLINK-SDK
+
 theme:
   name: material
+  language: en
+  logo: material/library
+  font:
+    text: Inter
+    code: JetBrains Mono
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - search.share
+    - toc.follow
+    - content.code.copy
+    - content.action.edit
+  palette:
+    # Dark-first, ChatGPT-like (slate + custom green accent)
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to dark mode
+
 plugins:
   - search
   - mkdocstrings:
@@ -10,9 +49,38 @@ plugins:
         python:
           options:
             show_source: false
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/neowalter/NEOXLINK-SDK
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/neoxlink/
+
 nav:
-  - Home: docs/index.md
-  - Quickstart: docs/quickstart.md
-  - Typed Outputs: docs/typed-outputs.md
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - Typed Outputs: typed-outputs.md
   - API:
-      - neoxlink_sdk: docs/api/neoxlink_sdk.md
+      - neoxlink_sdk: api/neoxlink_sdk.md
