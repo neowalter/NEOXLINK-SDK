@@ -40,13 +40,33 @@ dependencies = ["httpx>=0.27.0", "pydantic>=2.8.2", "openai"]
 [project.urls]
 Homepage = "https://pypi.org/project/neoxlink/"
 Repository = "https://github.com/neowalter/NEOXLINK-SDK"
-Documentation = "https://github.com/neowalter/NEOXLINK-SDK/blob/main/docs/wiki/README.md"
+Documentation = "https://neowalter.github.io/NEOXLINK-SDK/"
 Issues = "https://github.com/neowalter/NEOXLINK-SDK/issues"
 Changelog = "https://github.com/neowalter/NEOXLINK-SDK/releases"
+Discord = "https://discord.gg/neoxlink"
 [project.optional-dependencies]
-model_examples = ["anthropic", "google-genai", "ollama", "duckduckgo-search"]
+core = []
 mcp = ["mcp>=1.0.0", "anyio>=4.0.0"]
-dev = ["pytest>=8.0.0", "ruff>=0.4.0", "mcp>=1.0.0", "anyio>=4.0.0"]
+matching = ["rapidfuzz>=3.9.0"]
+model_examples = ["anthropic", "google-genai", "ollama", "duckduckgo-search"]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.4.0",
+    "mcp>=1.0.0",
+    "anyio>=4.0.0",
+    "mkdocs>=1.6.0",
+    "mkdocstrings[python]>=0.25.0",
+    "mkdocs-material>=9.5.0",
+]
+all = [
+    "mcp>=1.0.0",
+    "anyio>=4.0.0",
+    "rapidfuzz>=3.9.0",
+    "anthropic",
+    "google-genai",
+    "ollama",
+    "duckduckgo-search",
+]
 
 [project.scripts]
 neoxlink-mcp = "neoxlink_sdk.mcp_server:main"
@@ -55,7 +75,7 @@ neoxlink-mcp = "neoxlink_sdk.mcp_server:main"
 include = ["neoxlink_sdk*", "neoxlink"]
 
 [tool.setuptools.package-data]
-neoxlink_sdk = ["data/*.json"]
+neoxlink_sdk = ["data/*.json", "py.typed"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

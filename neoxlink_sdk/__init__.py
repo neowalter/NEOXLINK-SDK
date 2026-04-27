@@ -37,6 +37,7 @@ from .models import (
 from .pipeline import StructuredSubmissionPipeline
 from .plugins import PluginRegistry, RankingStrategy
 from .skill import NeoxlinkSkill
+from .typed_outputs import TypedLLMOutput, parse_typed_output, try_parse_typed_output
 from .unspsc import classify_unspsc, unspsc_candidates
 
 
@@ -89,9 +90,12 @@ __all__ = [
     "SkillResponse",
     "StructuredSubmissionPipeline",
     "SubmissionChainInput",
+    "TypedLLMOutput",
     "UNSPSCCandidate",
     "UNSPSCClassification",
     "classify_unspsc",
     "create_engine",
+    "parse_typed_output",
+    "try_parse_typed_output",
     "unspsc_candidates",
 ]

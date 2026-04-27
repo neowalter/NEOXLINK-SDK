@@ -12,13 +12,22 @@ from .models import (
     PipelineOutcome,
     ResolveResult,
 )
+from .pipeline_core import build_confirm_overrides, build_parse_metadata, parse_structured_data
 
 ConfirmDecision = bool | dict[str, Any]
 ConfirmHandler = Callable[[ParseDraft], ConfirmDecision]
 
 
 class AsyncStructuredSubmissionPipeline:
-    """Async version of :class:`~neoxlink_sdk.pipeline.StructuredSubmissionPipeline`."""
+    """Async version of :class:`~neoxlink_sdk.pipeline.StructuredSubmissionPipeline`.
+
+    Examples
+    --------
+    >>> from neoxlink_sdk import AsyncNeoXlinkClient, AsyncStructuredSubmissionPipeline
+    >>> client = AsyncNeoXlinkClient(base_url="http://localhost:8000", api_key="demo")
+    >>> pipeline = AsyncStructuredSubmissionPipeline(client)
+    >>> # await pipeline.run("Need procurement analytics support")
+    """
 
     def __init__(self, client: AsyncNeoXlinkClient) -> None:
         self.client = client
@@ -30,10 +39,7 @@ class AsyncStructuredSubmissionPipeline:
         metadata: dict[str, Any] | None = None,
         use_own_model: bool = False,
     ) -> ParseDraft:
-        parse_metadata = dict(metadata or {})
-        parse_metadata.setdefault("billing", {})
-        if isinstance(parse_metadata["billing"], dict):
-            parse_metadata["billing"].setdefault("use_own_model", use_own_model)
+        parse_metadata = build_parse_metadata(metadata, use_own_model)
         payload = await self.client.parse_entry(
             raw_text=text,
             entry_kind=entry_kind,
@@ -48,20 +54,12 @@ class AsyncStructuredSubmissionPipeline:
         )
 
     async def confirm(self, draft: ParseDraft, overrides: dict[str, Any] | None = None) -> ConfirmedEntry:
-        confirm_overrides = dict(overrides or {})
-        if draft.preview.unspsc:
-            confirm_overrides.setdefault("unspsc_code", draft.preview.unspsc.code)
-            confirm_overrides.setdefault("unspsc_name", draft.preview.unspsc.name)
+        confirm_overrides = build_confirm_overrides(draft, overrides)
         payload = await self.client.confirm_entry(
             confirmation_token=draft.confirmation_token,
             overrides=confirm_overrides,
         )
-        structured_data = payload.get("structured_data")
-        if isinstance(structured_data, dict):
-            try:
-                structured_data = ParsedPreview.model_validate(structured_data)
-            except Exception:
-                pass
+        structured_data = parse_structured_data(payload.get("structured_data"))
         return ConfirmedEntry(
             raw_entry_id=str(payload["raw_entry_id"]),
             entry_kind=payload.get("entry_kind", draft.preview.entry_kind),
