@@ -6,7 +6,8 @@ from .engine import ProcurementIntentEngine
 from .models import SkillRequest
 from .skill import NeoxlinkSkill
 
-_PARSE_PREVIEW_DESC = """Convert natural language into a machine-readable **Structured Preview** (no server-side confirmation).
+_PARSE_PREVIEW_DESC = """Convert natural language into a machine-readable **Structured Preview**
+(no server-side confirmation).
 
 Use when the agent must translate messy user text into a schema-aligned draft **before** a durable
 record is created. Typical `ParsedPreview` content includes optional 8-digit **UNSPSC** code + name
@@ -29,7 +30,8 @@ pipeline as `neoxlink.parse_preview` but **auto-confirmed**, with a stable entry
 **resolve** for answers or handoff—whether the destination is supply chain, ERP, or another system.
 
 **When to call:** the user says “submit”, “create the ticket/record”, “make it official”, or policy
-allows auto-confirm. **When not to call:** high-risk or policy-ambiguous cases—use `neoxlink.parse_preview` and human approval first.
+allows auto-confirm. **When not to call:** high-risk or policy-ambiguous cases—use
+`neoxlink.parse_preview` and human approval first.
 
 **Arguments:** `overrides` adjust structured fields (including UNSPSC hints) before confirm;
 `resolve_after_confirm` (default true) runs resolve after confirm.

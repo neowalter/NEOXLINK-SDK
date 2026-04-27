@@ -1,4 +1,4 @@
-from neoxlink_sdk.models import ParseDraft, ParsedPreview, UNSPSCClassification
+from neoxlink_sdk.models import ParsedPreview, ParseDraft, UNSPSCClassification
 from neoxlink_sdk.pipeline_core import build_confirm_overrides, build_parse_metadata, parse_structured_data
 
 

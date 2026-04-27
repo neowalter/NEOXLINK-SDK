@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .models import ParseDraft, ParsedPreview
+from .models import ParsedPreview, ParseDraft
 
 
 def build_parse_metadata(metadata: dict[str, Any] | None, use_own_model: bool) -> dict[str, Any]:
