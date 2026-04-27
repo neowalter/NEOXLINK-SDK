@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "neoxlink"
-version = "0.6.3"
-description = "Open-source SDK for LLM-first intent parsing, taxonomy mapping, extraction, and public-data matching pipelines"
+version = "0.6.4"
+description = "Open-source SDK: turn natural-language requirements into machine-readable structured intent—UNSPSC, previews, and MCP—so agents can plug into CRM, ERP, marketplaces, and your own systems."
 readme = "README.md"
 requires-python = ">=3.11"
 classifiers = [
@@ -24,13 +24,16 @@ keywords = [
     "UNSPSC",
     "MCP",
     "Model Context Protocol",
-    "procurement",
-    "B2B",
+    "natural-language",
+    "structured-intent",
+    "system-integration",
+    "ERP",
+    "CRM",
     "intent",
     "taxonomy",
     "agent",
     "skill",
-    "commerce",
+    "B2B",
     "LLM",
 ]
 dependencies = ["httpx>=0.27.0", "pydantic>=2.8.2", "openai"]

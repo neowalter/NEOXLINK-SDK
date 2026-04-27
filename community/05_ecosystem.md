@@ -1,6 +1,6 @@
 # Ecosystem
 
-This SDK should be easy to embed into agent runtimes and procurement platforms.
+This SDK should be easy to embed into agent runtimes, enterprise platforms, and custom backends that need structured handoff.
 
 ## Current ecosystem paths
 

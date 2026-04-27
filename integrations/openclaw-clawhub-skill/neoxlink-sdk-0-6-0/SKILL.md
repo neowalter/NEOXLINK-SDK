@@ -1,11 +1,11 @@
 ---
 name: neoxlink
 description: >-
-  UNSPSC-first B2B intent parsing and Agent Commerce via NEOXLINK MCP tools
-  (neoxlink.parse_preview, neoxlink.confirmed_submit). Use when normalizing
-  procurement or supply text to structured records, UNSPSC codes, or MCP-backed
-  submit flows.
-version: 0.6.3
+  Natural language to machine-readable structured intent via NEOXLINK MCP tools
+  (neoxlink.parse_preview, neoxlink.confirmed_submit). Use when turning messy
+  requirements into records, UNSPSC codes (goods/services), or MCP-backed
+  handoff to CRM, ERP, and other systems.
+version: 0.6.4
 metadata:
   openclaw:
     requires:
@@ -17,20 +17,20 @@ metadata:
     homepage: https://github.com/neowalter/NEOXLINK-SDK
     install:
       - kind: uv
-        package: "neoxlink[mcp]==0.6.3"
+        package: "neoxlink[mcp]==0.6.4"
         bins:
           - neoxlink-mcp
 ---
 
 # NEOXLINK SDK (MCP)
 
-Teach the agent to use **NEOXLINK** for **UNSPSC-aligned** structured previews and confirmed submits over **Model Context Protocol**, not ad-hoc JSON.
+Teach the agent to use **NEOXLINK** for **NL → structured, system-ready** previews and confirmed submits over **Model Context Protocol**, with **UNSPSC** when classifying offerings—not ad-hoc JSON.
 
 ## Install
 
 ```bash
-pip install 'neoxlink[mcp]==0.6.3'
-# or: uv pip install 'neoxlink[mcp]==0.6.3'
+pip install 'neoxlink[mcp]==0.6.4'
+# or: uv pip install 'neoxlink[mcp]==0.6.4'
 ```
 
 Host env (set in MCP host / secret store; never commit):

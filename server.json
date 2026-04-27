@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.neowalter/neoxlink",
   "title": "NEOXLINK MCP",
-  "description": "UNSPSC Standardization & B2B MCP: parse NL to taxonomy, confirm, resolve; optional local match.",
-  "version": "0.6.3",
+  "description": "MCP server: natural language to structured intent (UNSPSC where applicable), confirm, resolve; optional local match engine.",
+  "version": "0.6.4",
   "websiteUrl": "https://github.com/neowalter/NEOXLINK-SDK",
   "repository": {
     "url": "https://github.com/neowalter/NEOXLINK-SDK",
@@ -13,7 +13,7 @@
     {
       "registryType": "pypi",
       "identifier": "neoxlink",
-      "version": "0.6.3",
+      "version": "0.6.4",
       "transport": {
         "type": "stdio"
       },

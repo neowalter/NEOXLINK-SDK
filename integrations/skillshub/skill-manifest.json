@@ -1,21 +1,22 @@
 {
   "schema_version": "1.0",
   "skill_id": "com.neoxlink.unspsc.agent-commerce",
-  "name": "NEOXLINK SDK — UNSPSC Standardization & Agent Commerce",
-  "version": "0.6.3",
+  "name": "NEOXLINK SDK — Natural language to structured intent",
+  "version": "0.6.4",
   "license": "MIT",
-  "summary": "UNSPSC-first Standardization for B2B: MCP tools and HTTP APIs that bridge chat to executable procurement records (Agent Commerce).",
+  "summary": "Turn natural-language requirements into machine-readable structured intent (UNSPSC, previews, MCP). Connect agents to CRM, ERP, marketplaces, and custom systems—not only procurement.",
   "keywords": [
     "Standardization",
     "UNSPSC",
-    "B2B",
-    "Agent Commerce",
+    "structured-intent",
+    "natural-language",
     "MCP",
     "Model Context Protocol",
-    "procurement",
+    "system-integration",
+    "ERP",
+    "CRM",
     "taxonomy",
-    "intent parsing",
-    "supply chain"
+    "intent parsing"
   ],
   "documentation_urls": {
     "readme": "https://github.com/neowalter/NEOXLINK-SDK/blob/main/README.md",
@@ -26,7 +27,7 @@
   "runtime": {
     "type": "mcp_stdio",
     "python": ">=3.11",
-    "pip_spec": "neoxlink[mcp]==0.6.3",
+    "pip_spec": "neoxlink[mcp]==0.6.4",
     "entry_command": "neoxlink-mcp",
     "mcp_config_template_path": "mcp-config.json"
   },
@@ -34,12 +35,12 @@
     {
       "name": "neoxlink.parse_preview",
       "role": "parse_intent",
-      "summary": "NL → structured preview with UNSPSC Standardization; no auto-confirm (B2B / Agent Commerce)."
+      "summary": "NL → machine-readable structured preview with UNSPSC when applicable; no auto-confirm."
     },
     {
       "name": "neoxlink.confirmed_submit",
       "role": "commit_structured_record",
-      "summary": "Parse + confirm (+ optional resolve) for durable Agent Commerce artifacts."
+      "summary": "Parse + confirm (+ optional resolve) for durable structured records downstream."
     },
     {
       "name": "neoxlink.match_intent",
@@ -83,10 +84,10 @@
     "default_server_env": "NEOXLINK_BASE_URL"
   },
   "store_listing": {
-    "tagline_zh": "把模糊需求变成可执行的 UNSPSC 标准商业语义，打通对话到交易。",
-    "tagline_en": "Turn fuzzy chat into UNSPSC-standardized B2B intent—Agent Commerce from talk to transaction.",
-    "short_description_zh_max_100": "面向 B2B 与 Agent Commerce 的 UNSPSC Standardization 工具：解析非标需求、对齐全球商品服务代码，并可通过 MCP 供 Claude/Cursor 调用。",
-    "pain_point_zh": "模型“听懂了”却落不了地：缺少标准编码与结构化确认，ERP/采购系统无法执行；本技能将对话桥接到可确认、可解析、可匹配的交易记录。",
+    "tagline_zh": "自然语言需求转为机器可读的结构化意图，对接现有业务系统。",
+    "tagline_en": "Natural language to structured, system-ready intent—UNSPSC, MCP, and enterprise handoff.",
+    "short_description_zh_max_100": "将口语需求解析为可机读的结构化意图与 UNSPSC 对齐；经 MCP 供 Claude/Cursor 等接入 CRM/ERP/采购及自研系统。",
+    "pain_point_zh": "模型“听懂了”却无法被业务系统消费：缺少标准编码与可确认的结构化载荷；本技能把对话桥接到可解析、可路由、可落库的记录。",
     "example_prompts": [
       "用 UNSPSC Standardization 解析这条英文采购需求并给出结构化预览，不要自动确认：我们需要 500 个可回收瓦楞纸箱，两周内送达上海。",
       "调用 neoxlink.confirmed_submit 提交一条 sell-side supply：我们提供企业级 Kubernetes 托管与 7x24 运维，标注为 supply。",

@@ -17,8 +17,8 @@ class PromptTemplate:
 DEFAULT_INTENT_PROMPT = PromptTemplate(
     version="intent-v1",
     system_prompt=(
-        "You are a procurement intent parser. Convert natural language to structured intent "
-        "for downstream extraction and matching. Keep the output deterministic and concise."
+        "You are a business intent parser. Convert natural language to structured intent "
+        "for downstream extraction, classification, and matching. Keep the output deterministic and concise."
     ),
     output_contract=(
         "Return JSON with keys: product_or_service,requirements,constraints,language,confidence,raw_input."

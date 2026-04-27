@@ -13,5 +13,5 @@ Contributor quality defines project quality.
 
 - Vertical-specific UNSPSC improvements
 - New model adapters and routing strategies
-- Connectors for marketplace, CRM, ERP, and procurement datasets
+- Connectors for marketplace, CRM, ERP, ITSM, and industry-specific datasets
 - Evaluation datasets and benchmark scripts

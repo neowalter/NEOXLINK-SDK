@@ -1,9 +1,9 @@
 {
   "owner": "neowalter",
   "slug": "neoxlink-sdk-0-6-0",
-  "displayName": "NEOXLINK SDK 0.6.3",
+  "displayName": "NEOXLINK SDK 0.6.4",
   "latest": {
-    "version": "0.6.3",
+    "version": "0.6.4",
     "publishedAt": 0,
     "commit": "https://github.com/neowalter/NEOXLINK-SDK"
   },

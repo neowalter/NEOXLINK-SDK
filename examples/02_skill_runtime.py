@@ -25,7 +25,7 @@ def main() -> None:
 
     confirmed = skill.run(
         SkillRequest(
-            text="Need enterprise packaging procurement support in Shenzhen.",
+            text="Need enterprise packaging and logistics support in Shenzhen.",
             entry_kind="demand",
             auto_confirm=True,
             overrides={"constraints": {"region": ["Shenzhen"]}},

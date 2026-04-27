@@ -8,7 +8,7 @@ If you use the GitHub Wiki for end-user documentation, you can add pages from th
 
 # NEOXLINK-SDK
 
-Python SDK: natural language → **UNSPSC**-aligned structured business intent, with **MCP** stdio server and Skill runtime. Core API: `NeoXlinkClient`, `StructuredSubmissionPipeline`, `NeoxlinkSkill`, `NeoxlinkMCPAdapter`. Install: `pip install neoxlink`. MCP: `pip install 'neoxlink[mcp]'` then `neoxlink-mcp` with `NEOXLINK_API_KEY` set. **Layout:** versioned wiki mirror under `docs/wiki/` (start with `repository-layout.md` for HTTP vs catalog vs orchestration). Historical non-shipping code lives in `deprecated/` only. See the repository [README](https://github.com/OWNER/REPO#readme) for examples.
+Python SDK: natural language → **machine-readable structured intent**, with **UNSPSC** for product/service classification where needed, plus **MCP** stdio server and Skill runtime. Connect agents to CRM, ERP, marketplaces, and custom backends—not only procurement. Core API: `NeoXlinkClient`, `StructuredSubmissionPipeline`, `NeoxlinkSkill`, `NeoxlinkMCPAdapter`. Install: `pip install neoxlink`. MCP: `pip install 'neoxlink[mcp]'` then `neoxlink-mcp` with `NEOXLINK_API_KEY` set. **Layout:** versioned wiki mirror under `docs/wiki/` (start with `repository-layout.md` for HTTP vs catalog vs orchestration). Historical non-shipping code lives in `deprecated/` only. See the repository [README](https://github.com/OWNER/REPO#readme) for examples.
 
 ---
 

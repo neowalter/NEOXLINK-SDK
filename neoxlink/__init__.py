@@ -11,7 +11,7 @@ __all__ = ["SDK"]
 
 
 class SDK:
-    """Facade over :class:`~neoxlink_sdk.pipeline.StructuredSubmissionPipeline` for structured parsing."""
+    """High-level entry point: map natural language to structured, system-ready previews and records."""
 
     def __init__(
         self,
@@ -34,7 +34,7 @@ class SDK:
         metadata: dict[str, Any] | None = None,
         use_own_model: bool = False,
     ):
-        """Run LLM-backed **Structured Preview** (UNSPSC **Code + Name** when available)."""
+        """Run LLM-backed **Structured Preview**—machine-readable fields plus UNSPSC **Code + Name** when applicable."""
         return self._pipeline.parse(
             text=text,
             entry_kind=entry_kind,

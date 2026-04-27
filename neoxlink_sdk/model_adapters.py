@@ -214,7 +214,7 @@ class OpenAIChatCompletionsModel:
 
     def parse_intent(self, text: str) -> ParsedIntent:
         prompt = (
-            "Analyze procurement intent from user input. Think carefully and return JSON only.\n"
+            "Analyze business or operational intent from user input. Think carefully and return JSON only.\n"
             "Schema keys: product_or_service,constraints,quantity_signal,location,budget_hint,"
             "temporal_context,ambiguity_signals,confidence,raw_text.\n"
             f"Input: {text}"
@@ -227,7 +227,7 @@ class OpenAIChatCompletionsModel:
 
     def infer_unspsc_candidates(self, text: str, top_k: int = 5) -> list[UNSPSCCandidate]:
         prompt = (
-            "Infer the top UNSPSC candidates for the procurement intent below. "
+            "Infer the top UNSPSC candidates for the described intent below. "
             "Return JSON only with key `candidates`.\n"
             "Each candidate item must include: code,name,confidence.\n"
             f"Intent: {text}\n"

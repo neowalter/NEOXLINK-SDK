@@ -144,7 +144,7 @@ if __name__ == "__main__":
 
 ## PyPI metadata → “semantic tool” awareness
 
-Agents discover tools through **MCP `list_tools` descriptions** and **host-specific registries**, not by importing PyPI names as Python symbols. Maximize discoverability by keeping **[project] `description`**, **`keywords`**, and **`[project.urls]`** accurate in `pyproject.toml`, and by aligning **tool `description` strings** in `NeoxlinkMCPAdapter` with the same vocabulary (UNSPSC, procurement, B2B, MCP). Optional: publish **OpenAPI** (`openapi.json`) and link it from manifests (already done in `skill-manifest.json`).
+Agents discover tools through **MCP `list_tools` descriptions** and **host-specific registries**, not by importing PyPI names as Python symbols. Maximize discoverability by keeping **[project] `description`**, **`keywords`**, and **`[project.urls]`** accurate in `pyproject.toml`, and by aligning **tool `description` strings** in `NeoxlinkMCPAdapter` with the same vocabulary (natural language to structured intent, UNSPSC, system integration, MCP). Optional: publish **OpenAPI** (`openapi.json`) and link it from manifests (already done in `skill-manifest.json`).
 
 ## Three-line validation (“install → run → probe”)
 

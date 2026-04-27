@@ -6,57 +6,49 @@ from .engine import ProcurementIntentEngine
 from .models import SkillRequest
 from .skill import NeoxlinkSkill
 
-_PARSE_PREVIEW_DESC = """UNSPSC Standardization & B2B intent parsing (preview only, no server-side confirmation).
+_PARSE_PREVIEW_DESC = """Convert natural language into a machine-readable **Structured Preview** (no server-side confirmation).
 
-Use when the agent needs a structured, taxonomy-aligned interpretation of messy natural language
-**without** creating a confirmed commercial record yet. This is the MCP equivalent of a
-**parse_intent** step for **Agent Commerce** workflows: you receive a draft `ParsedPreview` that may
-include an 8-digit **UNSPSC** code plus human-readable segment name, extracted entities,
-constraints, keywords, confidence, and quality flags.
+Use when the agent must translate messy user text into a schema-aligned draft **before** a durable
+record is created. Typical `ParsedPreview` content includes optional 8-digit **UNSPSC** code + name
+(for goods/services), extracted entities, constraints, keywords, confidence, and quality flags—suitable
+for CRM, ERP, marketplaces, procurement, or custom backends.
 
-**When to call:** early in the funnel—discovery, quoting, RFP triage, supplier shortlisting—when you
-want **Standardization** signals before committing. **When not to call:** if the user or policy
-already approved persistence; prefer `neoxlink.confirmed_submit` instead.
+**When to call:** discovery, triage, quoting, or any step where you need **structured intent** first.
+**When not to call:** the user or policy has already approved persistence; prefer
+`neoxlink.confirmed_submit` instead.
 
 **Returns:** `SkillResponse` with `status="preview_ready"` and a `draft` containing
-`confirmation_token` (needed if you later confirm via the HTTP API) and `preview` (UNSPSC
-classification may be present depending on backend/heuristics).
+`confirmation_token` (for later HTTP confirm) and `preview` (UNSPSC may be present per backend).
 
-**Keywords:** Standardization, UNSPSC, B2B, Agent Commerce, procurement taxonomy, structured preview."""
+**Keywords:** natural language, structured intent, UNSPSC, system integration, MCP, Agent interoperability."""
 
-_CONFIRMED_SUBMIT_DESC = """UNSPSC Standardization with durable structured submit (parse + confirm in one MCP call).
+_CONFIRMED_SUBMIT_DESC = """Durable structured submit (parse + auto-confirm in one MCP call).
 
-Use when the agent should move from conversational understanding to an **executable B2B / Agent
-Commerce** artifact: this runs the same pipeline as `neoxlink.parse_preview` but **auto-confirms**,
-producing a confirmed entry id and (by default) triggering **resolve** so the host can obtain
-answers or next-step handoff metadata.
+Use when conversational input should become a **confirmed, machine-readable record** downstream: same
+pipeline as `neoxlink.parse_preview` but **auto-confirmed**, with a stable entry id and (by default)
+**resolve** for answers or handoff—whether the destination is supply chain, ERP, or another system.
 
-**When to call:** the user explicitly wants to “submit”, “file this demand/supply”, “make it
-official”, or your automation policy allows auto-confirm. **When not to call:** ambiguous
-legal/procurement gates—use `neoxlink.parse_preview` first and obtain human approval.
+**When to call:** the user says “submit”, “create the ticket/record”, “make it official”, or policy
+allows auto-confirm. **When not to call:** high-risk or policy-ambiguous cases—use `neoxlink.parse_preview` and human approval first.
 
-**Arguments:** `overrides` lets agents or humans adjust structured fields (including UNSPSC hints)
-before confirmation; `resolve_after_confirm` (default true) controls whether resolve runs
-immediately after confirm.
+**Arguments:** `overrides` adjust structured fields (including UNSPSC hints) before confirm;
+`resolve_after_confirm` (default true) runs resolve after confirm.
 
-**Keywords:** Standardization, UNSPSC, B2B, Agent Commerce, structured record, transaction bridge."""
+**Keywords:** structured record, UNSPSC, enterprise integration, MCP, natural language to API payload."""
 
-_MATCH_INTENT_DESC = """Local **match_supply** / **match_demand** ranking over a configured in-memory procurement
-engine (optional; requires `NEOXLINK_ENABLE_MATCH=1` on the server).
+_MATCH_INTENT_DESC = """Local **match_supply** / **match_demand** ranking over a configured in-memory matching
+engine (optional; `NEOXLINK_ENABLE_MATCH=1` on the server; reference implementation is procurement-oriented).
 
-Runs a staged pipeline: intent parse → UNSPSC candidate inference → optional clarification state →
-normalized intent → ranked suppliers or buyers. This complements cloud `neoxlink.confirmed_submit`
-by giving agents a **deterministic, offline-friendly** matching surface for demos, tests, or
-air-gapped Standardization workflows.
+Runs: intent parse → UNSPSC inference → optional clarification → normalized intent → ranked
+counterparties. Useful for **offline** demos, tests, or air-gapped environments; swap data sources in
+custom deployments to cover other matching domains.
 
-**When to call:** you need ranked counterparties **without** calling the remote NeoXlink API, and the
-operator enabled the local engine. **When not to call:** production matching against live marketplace
-data—use HTTP search/resolve flows instead.
+**When to call:** ranked matches are needed **without** the remote NeoXlink API and the local engine
+is enabled. **When not to call:** production catalog search against live services—use HTTP flows.
 
-**Arguments:** `target` selects `suppliers` vs `buyers`; `top_k` bounds results (1–50);
-`clarification_answers` fills structured follow-up answers when the engine requests clarification.
+**Arguments:** `target` = `suppliers` vs `buyers`; `top_k` 1–50; `clarification_answers` for follow-ups.
 
-**Keywords:** Standardization, UNSPSC, B2B, Agent Commerce, supply-demand matching."""
+**Keywords:** local matching, UNSPSC, supply-demand, structured intent, MCP."""
 
 
 class NeoxlinkMCPAdapter:

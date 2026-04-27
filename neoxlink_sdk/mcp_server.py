@@ -45,7 +45,7 @@ def _pkg_version() -> str:
 
         return version("neoxlink")
     except Exception:  # pragma: no cover
-        return "0.6.3"
+        return "0.6.4"
 
 
 def build_adapter() -> NeoxlinkMCPAdapter:
@@ -64,10 +64,10 @@ def _run_stdio(adapter: NeoxlinkMCPAdapter) -> None:
     anyio = importlib.import_module("anyio")
 
     instructions = (
-        "NEOXLINK: UNSPSC Standardization, B2B taxonomy mapping, and Agent Commerce tooling. "
-        "Prefer `neoxlink.parse_preview` for reversible previews; use `neoxlink.confirmed_submit` when the user "
-        "or policy authorizes a durable structured record. Read `unspsc://catalog` or "
-        "`unspsc://entry/{code}` resources for the packaged UNSPSC subset shipped with the SDK."
+        "NEOXLINK: natural language to machine-readable structured intent; UNSPSC taxonomy when classifying "
+        "goods and services. Prefer `neoxlink.parse_preview` for reversible previews; use "
+        "`neoxlink.confirmed_submit` when the user or policy authorizes a durable record for downstream "
+        "systems. Read `unspsc://catalog` or `unspsc://entry/{code}` for the packaged UNSPSC subset."
     )
     app = Server(
         "neoxlink",

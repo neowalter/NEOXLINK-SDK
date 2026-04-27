@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "NeoXlink Public HTTP API",
-    "version": "0.6.3",
-    "description": "UNSPSC-aligned Standardization and B2B Agent Commerce HTTP surface consumed by the `neoxlink` distribution (`NeoXlinkClient`). Replace the server URL via `NEOXLINK_BASE_URL` in SDK and MCP host configuration. Keywords: Standardization, UNSPSC, B2B, Agent Commerce.",
+    "version": "0.6.4",
+    "description": "HTTP surface for natural-language → structured intent consumed by the `neoxlink` distribution (`NeoXlinkClient`). UNSPSC alignment for product/service classification; suitable for CRM, ERP, marketplaces, and custom integrations. Override the server URL via `NEOXLINK_BASE_URL` in SDK and MCP host configuration.",
     "license": {
       "name": "MIT",
       "url": "https://opensource.org/licenses/MIT"

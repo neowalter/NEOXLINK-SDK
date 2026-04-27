@@ -1,7 +1,7 @@
 {
   "name": "neoxlink",
-  "version": "0.6.3",
-  "description": "UNSPSC-first structured intent and Agent Commerce via MCP (parse_preview, confirmed_submit).",
+  "version": "0.6.4",
+  "description": "Natural language to structured, system-ready intent via MCP (parse_preview, confirmed_submit); UNSPSC when classifying offerings.",
   "author": "neowalter",
   "license": "MIT",
   "documentation": "SKILL.md",
@@ -9,7 +9,7 @@
     "mcp",
     "unspsc",
     "b2b",
-    "procurement",
+    "structured-intent",
     "agent-commerce",
     "neoxlink"
   ],
@@ -22,7 +22,7 @@
     "python": ">=3.11"
   },
   "requirements": [
-    "pip install 'neoxlink[mcp]==0.6.3'",
+    "pip install 'neoxlink[mcp]==0.6.4'",
     "NEOXLINK_API_KEY in MCP host environment"
   ],
   "configuration": {

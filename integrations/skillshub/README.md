@@ -1,6 +1,6 @@
 # skillshub.ai integration (optional)
 
-Artifacts for registries that accept skill metadata and MCP runtime descriptors. NEOXLINK-SDK focuses on **UNSPSC Standardization**, **B2B**, and **Agent Commerce** — not generic chat.
+Artifacts for registries that accept skill metadata and MCP runtime descriptors. NEOXLINK-SDK turns **natural language into machine-readable structured intent** (UNSPSC for goods/services) so agents can hand off to **existing systems**—not generic chat only.
 
 ## Files
 

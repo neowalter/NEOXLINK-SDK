@@ -1,6 +1,6 @@
 # UNSPSC quick reference (for NEOXLINK-SDK)
 
-**UNSPSC** (United Nations Standard Products and Services Code) is the **commercial taxonomy** this SDK uses to map natural language to **Code + Name** pairs — not a chat label, but a **B2B execution coordinate** shared by procurement, marketplaces, and compliance tooling.
+**UNSPSC** (United Nations Standard Products and Services Code) is the **product/service taxonomy** this SDK often uses to map natural language to **Code + Name** pairs—a **machine-readable coordinate** shared by procurement, marketplaces, ERP, and compliance tooling, not a free-form chat label.
 
 ## Why it matters here
 

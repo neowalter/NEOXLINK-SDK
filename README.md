@@ -11,15 +11,15 @@
 [![Agent channels](https://img.shields.io/badge/docs-Agent%20channels-2ea043.svg)](docs/wiki/agent-channel-matrix.md)
 [![Repository layout](https://img.shields.io/badge/docs-Repository%20layout-1f6feb.svg)](docs/wiki/repository-layout.md)
 
-**Bridging the gap between Chat and Transaction** — turn fuzzy natural language into **Standardized Business Intelligence** and executable procurement workflows.
+**From natural language to machine-readable intent** — turn fuzzy requirements into **structured representations** (schemas, codes, confirmed records) that **existing software systems** can parse, route, and execute—not only one vertical.
 
-> **Vision:** NEOXLINK-SDK is the **operating system for AI commercialization**. It closes the last mile between “the model understood the request” and “the business system can act on it” by normalizing intent with the **UNSPSC global standard (Code + Name)**, **Structured Preview**, human or agent confirmation, durable structured records, and **AI Resolve** (direct answers or real supply-chain handoff). **Agent Interoperability** is first-class: integrate directly, run inside **Skill** runtimes, or expose capabilities via **MCP (Model Context Protocol)** tools.
+> **Vision:** NEOXLINK-SDK closes the gap between “the model paraphrased the user” and “downstream systems can consume a deterministic payload.” It normalizes free text using the **UNSPSC global standard (Code + Name)** where product/service classification applies, **Structured Preview**, human or agent confirmation, durable structured records, and **AI Resolve** (answers or handoff to fulfillment). The same pipeline plugs into **procurement, CRM, ERP, marketplaces, ticketing, or custom stacks**—with **plugins**, overrides, and **MCP (Model Context Protocol)** so agents and apps stay interoperable.
 
 [中文文档 `README_zh.md`](README_zh.md) · [UNSPSC 快速查阅（同仓）](docs/wiki/unspsc-quick-ref.md) · [MCP 集成说明](docs/wiki/mcp-integration.md)
 
-## System architecture (chat → transaction)
+## System architecture (natural language → structured, system-ready output)
 
-High-level data path from natural language to **standardized, actionable** records. (Diagram is a *logical* view; your deployment may split API, matching, and MCP host.)
+High-level data path from natural language to **standardized, machine-readable** records you can forward to any backend. (Diagram is a *logical* view; your deployment may split API, matching, and MCP host.)
 
 ```mermaid
 flowchart LR
@@ -47,34 +47,35 @@ For the **maintained** layering diagram (HTTP client vs local UNSPSC catalog vs 
 
 ## The gap (and how we close it)
 
-Classic chat AI stops at paraphrasing needs. Enterprise procurement, trading, and compliance systems speak **codes, constraints, and structured intents** — not paragraphs. NEOXLINK-SDK translates messy language into **structured business instructions** aligned to **UNSPSC**, then supports **Supply-Demand Matching** on the same normalized axis.
+Classic chat AI stops at paraphrasing. Real systems—**CRM, ERP, procurement, compliance, marketplaces, internal tools**—need **codes, constraints, and structured fields**. NEOXLINK-SDK turns messy language into **structured business instructions**, often aligned to **UNSPSC** for goods and services, then supports **Supply-Demand Matching** (and other workflows) on the same normalized axis.
 
 | Dimension | Traditional AI chat | NEOXLINK-SDK |
 | --- | --- | --- |
 | Output | Free-form text | **Structured Preview** + typed payloads |
-| Taxonomy | Ad-hoc labels | **UNSPSC (Code + Name)** normalization |
-| Transaction readiness | Low | Parse → confirm → structured DB → **resolve / match** |
+| Taxonomy | Ad-hoc labels | **UNSPSC (Code + Name)** normalization where applicable |
+| Downstream readiness | Low | Parse → confirm → structured store → **resolve / match** |
 | Agent integration | Ad-hoc prompts | **Skill** adapters + **MCP** tool surface |
-| Matching | Semantic vibes only | **Supply-Demand Matching** with explicit signals |
+| Matching | Semantic vibes only | **Supply-Demand Matching** with explicit signals (example domain) |
 
 ## Features
 
-- **UNSPSC-first taxonomy** — consistent **Code + Name** for demand and supply.
+- **NL → structured intent** — requirements become fields, codes, and artifacts systems can ingest.
+- **UNSPSC-first taxonomy** — consistent **Code + Name** when classifying products and services.
 - **Structured Preview** — LLM-refined structure before anything is committed.
-- **Human / agent confirmation** — overrides and policy gates before persistence.
-- **Structured persistence** — records land in a structured pipeline ready for operators.
-- **AI Resolve** — AI-direct answers or routing toward real fulfillment.
-- **Supply-Demand Matching** — staged `ProcurementIntentEngine` with pluggable data and ranking.
+- **Human / agent confirmation** — overrides and policy gates before persistence (personalized flows).
+- **Structured persistence** — records land in a pipeline you can connect to existing systems.
+- **AI Resolve** — direct answers or routing toward the right backend or fulfillment.
+- **Supply-Demand Matching** — staged `ProcurementIntentEngine` with pluggable data and ranking (one built-in pattern; extend for other domains).
 - **Agent Interoperability** — `NeoxlinkSkill`, `NeoxlinkMCPAdapter`, and chain-style orchestration.
 - **MCP tool exposure** — stable tool names such as `neoxlink.parse_preview` and `neoxlink.confirmed_submit`.
 
 ## Core flow
 
-1. **Natural language in** — buyer, seller, or agent describes the need in plain language.  
-2. **LLM Structured Preview** — intent is refined into a preview (including **UNSPSC** where applicable).  
+1. **Natural language in** — user or agent describes the need in plain language.  
+2. **LLM Structured Preview** — intent is refined into a preview (including **UNSPSC** when classifying offerings).  
 3. **User / agent confirm** — approve or edit; business truth is explicit.  
-4. **Structured database** — confirmed record is stored for downstream systems.  
-5. **AI Resolve** — answer, escalate, or connect to real supply / fulfillment.
+4. **Structured store** — confirmed record is ready for **your** APIs, webhooks, ERP, or marketplace.  
+5. **AI Resolve** — answer, escalate, or connect to the appropriate downstream process.
 
 ## Quick start
 
@@ -147,13 +148,15 @@ Equivalent with pip: `pip install 'neoxlink[mcp]' && neoxlink-mcp`. Use [`mcp-co
 
 ## Use cases
 
-- **Global procurement & sourcing** — standardize requisitions and supplier catalogs across regions using **UNSPSC**.  
-- **Cross-border trade** — align multilingual requests with a single commodity and service taxonomy for RFQs and compliance.  
-- **B2B marketplaces & ERP handoff** — turn conversational intake into records that downstream systems can ingest.  
-- **Agent products** — ship **MCP** tools or **Skill** contracts without reinventing procurement ontology.  
-- **Supply-Demand Matching** — rank partners with transparent scoring on top of normalized intent.
+- **Any system that needs structured intake** — turn chat or voice into payloads your **CRM, ERP, ticketing, or custom API** already understands.  
+- **Global procurement & sourcing** (one strong fit) — standardize requisitions and catalogs with **UNSPSC**.  
+- **Cross-border trade & compliance** — align multilingual requests with a shared taxonomy where codes matter.  
+- **B2B marketplaces & integrations** — conversational front ends with deterministic records for partners.  
+- **Agent products** — ship **MCP** tools or **Skill** contracts without inventing a new ontology from scratch.  
+- **Personalized automation** — confirmation steps, overrides, and plugins adapt flows per tenant or policy.  
+- **Supply-Demand Matching** — rank counterparties with transparent scoring on normalized intent (reference engine in-repo).
 
-## Architecture highlights (v0.6.3)
+## Architecture highlights (v0.6.4)
 
 | Module | Role |
 | --- | --- |
