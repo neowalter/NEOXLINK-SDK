@@ -1,6 +1,8 @@
 # Typed Outputs
 
-`neoxlink_sdk.typed_outputs` provides strict Pydantic-v2 validation for LLM structured responses.
+!!! info "Module"
+
+    `neoxlink_sdk.typed_outputs` provides **strict Pydantic v2** validation for LLM structured responses, so you can treat model output as data, not free text.
 
 ```python
 from neoxlink_sdk.typed_outputs import parse_typed_output

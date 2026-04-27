@@ -1,10 +1,23 @@
 # Quickstart
 
+!!! abstract "What you will do"
+
+    Install the package, point the client at your **NEOXLINK** base URL, then call **`parse_preview`** with a natural-language requirement string.
+
 ## Install
 
-```bash
-pip install neoxlink
-```
+=== "pip"
+
+    ```bash
+    pip install neoxlink
+    ```
+
+=== "pip (extras later)"
+
+    ```bash
+    pip install neoxlink
+    # optional: mcp, matching, or all — see below
+    ```
 
 ## First API call
 
@@ -18,6 +31,12 @@ print(result)
 
 ## Optional extras
 
-- MCP support: `pip install "neoxlink[mcp]"`
-- Matching helpers: `pip install "neoxlink[matching]"`
-- Full bundle: `pip install "neoxlink[all]"`
+| Bundle | Command |
+| --- | --- |
+| MCP | `pip install "neoxlink[mcp]"` |
+| Matching | `pip install "neoxlink[matching]"` |
+| Full | `pip install "neoxlink[all]"` |
+
+!!! tip "Next"
+
+    Read **[Typed outputs](typed-outputs.md)** for strict Pydantic validation and **[API](api/neoxlink_sdk.md)** for the full module surface.
